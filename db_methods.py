@@ -5,6 +5,12 @@ from pathlib import Path
 from environs import Env
 
 
+def create_db(db_file_path, db_structure, db_file_name) -> None:
+    if not db_file_path.exists():
+        create_table(db_structure, "client", 1)
+        save_json(db_structure, db_file_name)
+
+
 def load_json(file_name) -> dict:
     with open(file_name, "r", encoding="utf8") as file:
         file_data = json.load(file)
@@ -90,16 +96,13 @@ def main():
         "1231231234",
         "Dima",
         "Ivanov",
-        "+79154127021",
+        "+79154127022",
         "",
         "",
         "",
     ]
 
-    if not db_file_path.exists():
-        create_table(db_structure, "client", 1)
-        save_json(db_structure, db_file_name)
-
+    create_db(db_file_path, db_structure, db_file_name)
     loaded_db = load_json(db_file_path)
     save_json(add_client(loaded_db, test_client_fields), db_file_name)
 
