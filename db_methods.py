@@ -24,7 +24,11 @@ def save_json(db_structure: dict, json_file: str) -> None:
 
 
 def create_table(db_structure, table_name: str, table_foreign: int) -> dict:
-    table_db_structure = {"table_name": table_name, "foreign": table_foreign, "items": []}
+    table_db_structure = {
+        "table_name": table_name,
+        "foreign": table_foreign,
+        "items": [],
+    }
     db_structure["items"].append(table_db_structure)
 
     return db_structure
@@ -91,20 +95,36 @@ def main():
     db_structure = {"items": []}
     db_file_path = Path(db_file_name)
 
-    test_client_fields = [
-        "supernick",
-        "1231231234",
-        "Dima",
-        "Ivanov",
-        "+79154127022",
-        "",
-        "",
-        "",
+    example_clients = [
+        [
+            "supernick",
+            "1231231234",
+            "Dima",
+            "Ivanov",
+            "+79154127022",
+            "",
+            "",
+            "",
+        ],
+        [
+            "zaza",
+            "31365464567",
+            "Sveta",
+            "Zhukova",
+            "+79515521906",
+            "",
+            "",
+            "",
+        ],
     ]
 
     create_db(db_file_path, db_structure, db_file_name)
     loaded_db = load_json(db_file_path)
-    save_json(add_client(loaded_db, test_client_fields), db_file_name)
+
+    for example_client in example_clients:
+        add_client(loaded_db, example_client)
+
+    save_json(loaded_db, db_file_name)
 
 
 if __name__ == "__main__":
