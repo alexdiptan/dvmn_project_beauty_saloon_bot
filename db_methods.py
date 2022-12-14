@@ -52,18 +52,21 @@ def add_client(db_structure: dict, client_fields: list) -> dict:
     }
 
     clients = db_structure["items"][0]["items"]
-    if len(clients) == 0:
-        clients.append(client_data)
+    f_cl = search_client(clients, phone)
 
-    for client in clients:
-        if phone not in client.values():
-            clients.append(client_data)
+    if not f_cl:
+        clients.append(client_data)
 
     return db_structure
 
 
-def search_client():
-    pass
+def search_client(clients: dict, phone):
+    found_client = None
+    for client in clients:
+        if phone in client.values():
+            found_client = client
+
+    return found_client
 
 
 def search_client_order():
@@ -83,11 +86,11 @@ def main():
     db_file_path = Path(db_file_name)
 
     test_client_fields = [
-        "alexdiptan",
+        "supernick",
         "1231231234",
-        "Alex",
-        "Diptan",
-        "+79134127021",
+        "Dima",
+        "Ivanov",
+        "+79154127021",
         "",
         "",
         "",
