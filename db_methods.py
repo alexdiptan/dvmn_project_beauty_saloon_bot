@@ -56,10 +56,18 @@ def add_client(db_structure: dict, client_fields: list) -> dict:
         clients.append(client_data)
 
     for client in clients:
-        if tg_user_name not in client.values():
+        if phone not in client.values():
             clients.append(client_data)
 
     return db_structure
+
+
+def search_client():
+    pass
+
+
+def search_client_order():
+    pass
 
 
 def add_client_order():
