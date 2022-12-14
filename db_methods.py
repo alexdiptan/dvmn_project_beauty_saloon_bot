@@ -69,7 +69,7 @@ def main():
     db_structure = {"items": []}
     db_file_path = Path(db_file_name)
 
-    client_fields = [
+    test_client_fields = [
         "alexdiptan",
         "1231231234",
         "Alex",
@@ -85,7 +85,7 @@ def main():
         save_json(db_structure, db_file_name)
 
     loaded_db = load_json(db_file_path)
-    save_json(add_client(loaded_db, client_fields), db_file_name)
+    save_json(add_client(loaded_db, test_client_fields), db_file_name)
 
 
 if __name__ == "__main__":
