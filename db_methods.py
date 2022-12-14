@@ -25,6 +25,8 @@ def create_table(db_structure, table_name: str, table_foreign: int):
 
 
 def add_client(db_structure: dict, client_fields: list):
+    now_date = datetime.datetime.now()
+    date_time = now_date.strftime("%d.%m.%Y %H:%M:%S")
     (
         tg_user_name,
         tg_chat_id,
@@ -42,7 +44,8 @@ def add_client(db_structure: dict, client_fields: list):
         "first_name": first_name,
         "last_name": last_name,
         "phone": phone,
-        "created_at": created_at,
+        "client_orders": [],
+        "created_at": date_time,
         "updated_at": updated_at,
         "removed_at": removed_at,
     }
@@ -65,7 +68,7 @@ def main():
 
     db_structure = {"items": []}
     db_file_path = Path(db_file_name)
-    now_date = datetime.datetime.now()
+
     client_fields = [
         "alexdiptan",
         "1231231234",
