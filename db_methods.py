@@ -5,7 +5,7 @@ from pathlib import Path
 from environs import Env
 
 
-def load_json(file_name):
+def load_json(file_name) -> dict:
     with open(file_name, "r", encoding="utf8") as file:
         file_data = json.load(file)
 
@@ -17,16 +17,17 @@ def save_json(db_structure: dict, json_file: str) -> None:
         json.dump(db_structure, file, ensure_ascii=False, indent=2)
 
 
-def create_table(db_structure, table_name: str, table_foreign: int):
+def create_table(db_structure, table_name: str, table_foreign: int) -> dict:
     table_db_structure = {"table_name": table_name, "foreign": table_foreign, "items": []}
     db_structure["items"].append(table_db_structure)
 
     return db_structure
 
 
-def add_client(db_structure: dict, client_fields: list):
+def add_client(db_structure: dict, client_fields: list) -> dict:
     now_date = datetime.datetime.now()
     date_time = now_date.strftime("%d.%m.%Y %H:%M:%S")
+
     (
         tg_user_name,
         tg_chat_id,
@@ -59,6 +60,10 @@ def add_client(db_structure: dict, client_fields: list):
             clients.append(client_data)
 
     return db_structure
+
+
+def add_client_order():
+    pass
 
 
 def main():
