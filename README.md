@@ -1,1 +1,1 @@
-# dvmn_project_beauty_saloon_bot
+# Бот для записи в салон красоты
