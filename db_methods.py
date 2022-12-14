@@ -64,7 +64,7 @@ def add_client(db_structure: dict, client_fields: list):
 def main():
     env = Env()
     env.read_env()
-    db_file_name = env.str("DB_FILE_NAME", "")
+    db_file_name = env.str("DB_FILE_NAME", "db.json")
 
     db_structure = {"items": []}
     db_file_path = Path(db_file_name)
