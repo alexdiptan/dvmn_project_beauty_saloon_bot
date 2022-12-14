@@ -61,11 +61,10 @@ def add_client(db_structure: dict, client_fields: list) -> dict:
         "removed_at": removed_at,
     }
 
-    clients = db_structure["items"][0]["items"]
-    f_cl = search_client(clients, phone)
+    clients_table = db_structure["items"][0]["items"]
 
-    if not f_cl:
-        clients.append(client_data)
+    if not search_client(clients_table, phone):
+        clients_table.append(client_data)
 
     return db_structure
 
@@ -125,6 +124,9 @@ def main():
         add_client(loaded_db, example_client)
 
     save_json(loaded_db, db_file_name)
+
+    clients_table = loaded_db["items"][0]["items"]
+    print(search_client(clients_table, '+79515521906'))
 
 
 if __name__ == "__main__":
