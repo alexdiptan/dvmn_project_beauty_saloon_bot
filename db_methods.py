@@ -121,18 +121,18 @@ def main():
     db_file_path = Path(db_file_name)
 
     client_example = [
-        "supernick",
-        "1231231234",
-        "Dima",
-        "Ivanov",
-        "+79154127022",
+        "zero_man",
+        "75675231234",
+        "Igor",
+        "Sheremrtiev",
+        "+79114210967",
     ]
 
     order_example = [
-        "Укладка",
-        "900 RUR",
-        "Мастер 32",
-        "15:00",
+        "Тату",
+        "4500 RUR",
+        "Мастер 7",
+        "11:00",
     ]
 
     create_db(db_file_path, db_structure, db_file_name)
@@ -144,7 +144,7 @@ def main():
 
     clients_table = loaded_db["items"][0]["items"]
 
-    add_client_order(loaded_db, order_example, "+79154127022")
+    add_client_order(loaded_db, order_example, "+79114210967")
 
     save_json(loaded_db, db_file_name)
     client = search_client(clients_table, "+79154127022")
