@@ -107,5 +107,6 @@ def main():
     clients_table = loaded_db["items"][0]["items"]
     print(search_client(clients_table, '+79515521906'))
 
+
 if __name__ == "__main__":
     main()
