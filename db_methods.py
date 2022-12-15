@@ -36,7 +36,7 @@ def create_table(db_structure, table_name: str, table_foreign: int) -> dict:
 
 def add_client(db_structure: dict, client_fields: list) -> dict:
     now_date = datetime.datetime.now()
-    date_time = now_date.strftime("%d.%m.%Y %H:%M:%S")
+    client_created_at = now_date.strftime("%d.%m.%Y %H:%M:%S")
 
     (
         tg_user_name,
@@ -53,7 +53,7 @@ def add_client(db_structure: dict, client_fields: list) -> dict:
         "last_name": last_name,
         "phone": phone,
         "client_orders": [],
-        "created_at": date_time,
+        "created_at": client_created_at,
     }
 
     clients_table = db_structure["items"][0]["items"]
@@ -64,7 +64,7 @@ def add_client(db_structure: dict, client_fields: list) -> dict:
     return db_structure
 
 
-def search_client(clients: dict, phone):
+def search_client(clients: dict, phone: str) -> dict:
     found_client = None
     for client in clients:
         if phone in client.values():
@@ -77,8 +77,27 @@ def search_client_order():
     pass
 
 
-def add_client_order():
-    pass
+def add_client_order(order_fields: list, client_phone: str) -> None:
+    now_date = datetime.datetime.now()
+    order_created_at = now_date.strftime("%d.%m.%Y %H:%M:%S")
+
+    (
+        service_name,
+        service_price,
+        specialist,
+        timeslot,
+    ) = order_fields
+
+    client_order = {"service_name": service_name,
+                    "service_price": service_price,
+                    "specialist": specialist,
+                    "timeslot": timeslot,
+                    "order_status": "",
+                    "created_at": order_created_at,
+                    "competed_at": "",
+                    }
+
+    found_client = search_client(client_phone)
 
 
 def main():
@@ -95,6 +114,14 @@ def main():
         "Dima",
         "Ivanov",
         "+79154127022",
+    ]
+
+    order_example = [
+        "Стрижка",
+        "500 USD",
+        "Мастер Семенова Анна",
+        "15:00-16:30",
+        "Запланирован",
     ]
 
     create_db(db_file_path, db_structure, db_file_name)
