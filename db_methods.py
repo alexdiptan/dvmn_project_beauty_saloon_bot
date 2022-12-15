@@ -73,17 +73,13 @@ def search_client(clients: dict, phone: str) -> dict:
     return found_client
 
 
-def search_client_order():
-    pass
-
-
 def add_client_order(
     service_db: dict, order_fields: list, client_phone: str
 ):
     clients = service_db["items"][0]["items"]
     clients_table = service_db["items"][0]
     clients_table.setdefault("last_order_id", 0)
-    clients_table["last_order_id"] += 1
+    # last_order_id = clients_table["last_order_id"]
     now_date = datetime.datetime.now()
     order_created_at = now_date.strftime("%d.%m.%Y %H:%M:%S")
     found_client = search_client(clients, client_phone)
@@ -96,7 +92,7 @@ def add_client_order(
     ) = order_fields
 
     client_order = {
-        "order_id": clients_table["last_order_id"],
+        "order_id": "",
         "service_name": service_name,
         "service_price": service_price,
         "specialist": specialist,
@@ -106,15 +102,18 @@ def add_client_order(
         "competed_at": "",
     }
 
-    client = None
+    filled_db = None
 
     if found_client:
+        clients_table["last_order_id"] += 1
+        # last_order_id += 1
+        client_order["order_id"] = clients_table["last_order_id"]
         found_client["client_orders"].append(client_order)
         found_client.setdefault("last_client_order", {})
         found_client["last_client_order"] = client_order
-        client = service_db
+        filled_db = service_db
 
-    return client
+    return filled_db
 
 
 def main():
@@ -148,7 +147,7 @@ def main():
     save_json(loaded_db, db_file_name)
 
     clients_table = loaded_db["items"][0]["items"]
-    print(search_client(clients_table, "+79515521906"))
+    print(search_client(clients_table, "+79515521901"))
     print(add_client_order(loaded_db, order_example, "+79154127022"))
     save_json(loaded_db, db_file_name)
 
