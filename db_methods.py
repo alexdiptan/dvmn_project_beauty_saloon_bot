@@ -44,9 +44,6 @@ def add_client(db_structure: dict, client_fields: list) -> dict:
         first_name,
         last_name,
         phone,
-        created_at,
-        updated_at,
-        removed_at,
     ) = client_fields
 
     client_data = {
@@ -57,8 +54,6 @@ def add_client(db_structure: dict, client_fields: list) -> dict:
         "phone": phone,
         "client_orders": [],
         "created_at": date_time,
-        "updated_at": updated_at,
-        "removed_at": removed_at,
     }
 
     clients_table = db_structure["items"][0]["items"]
@@ -101,9 +96,6 @@ def main():
             "Dima",
             "Ivanov",
             "+79154127022",
-            "",
-            "",
-            "",
         ],
         [
             "zaza",
@@ -111,9 +103,6 @@ def main():
             "Sveta",
             "Zhukova",
             "+79515521906",
-            "",
-            "",
-            "",
         ],
     ]
 
