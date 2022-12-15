@@ -1,0 +1,37 @@
+{
+  "items": [
+    {
+      "table_name": "client",
+      "foreign": 1,
+      "items": [
+        {
+          "tg_user_name": "supernick",
+          "tg_chat_id": "1231231234",
+          "first_name": "Dima",
+          "last_name": "Ivanov",
+          "phone": "+79154127022",
+          "client_orders": [],
+          "created_at": "15.12.2022 14:54:21"
+        },
+        {
+          "tg_user_name": "zaza",
+          "tg_chat_id": "31365464567",
+          "first_name": "Sveta",
+          "last_name": "Zhukova",
+          "phone": "+79515521906",
+          "client_orders": [],
+          "created_at": "15.12.2022 14:54:21"
+        },
+        {
+          "tg_user_name": "di_stucco",
+          "tg_chat_id": 779622578,
+          "first_name": "Коля",
+          "last_name": "Сверчков",
+          "phone": "+79259998844",
+          "client_orders": [],
+          "created_at": "15.12.2022 16:10:31"
+        }
+      ]
+    }
+  ]
+}
