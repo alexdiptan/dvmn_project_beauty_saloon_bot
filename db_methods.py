@@ -73,13 +73,10 @@ def search_client(clients: dict, phone: str) -> dict:
     return found_client
 
 
-def add_client_order(
-    service_db: dict, order_fields: list, client_phone: str
-):
+def add_client_order(service_db: dict, order_fields: list, client_phone: str):
     clients = service_db["items"][0]["items"]
     clients_table = service_db["items"][0]
     clients_table.setdefault("last_order_id", 0)
-    # last_order_id = clients_table["last_order_id"]
     now_date = datetime.datetime.now()
     order_created_at = now_date.strftime("%d.%m.%Y %H:%M:%S")
     found_client = search_client(clients, client_phone)
@@ -106,7 +103,6 @@ def add_client_order(
 
     if found_client:
         clients_table["last_order_id"] += 1
-        # last_order_id += 1
         client_order["order_id"] = clients_table["last_order_id"]
         found_client["client_orders"].append(client_order)
         found_client.setdefault("last_client_order", {})
@@ -147,9 +143,15 @@ def main():
     save_json(loaded_db, db_file_name)
 
     clients_table = loaded_db["items"][0]["items"]
-    print(search_client(clients_table, "+79515521901"))
-    print(add_client_order(loaded_db, order_example, "+79154127022"))
+
+    add_client_order(loaded_db, order_example, "+79154127022")
+
     save_json(loaded_db, db_file_name)
+    client = search_client(clients_table, "+79154127022")
+
+    if client is not None:
+        for client_order in client["client_orders"]:
+            print(client_order)
 
 
 if __name__ == "__main__":
