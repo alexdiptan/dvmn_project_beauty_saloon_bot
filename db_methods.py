@@ -89,34 +89,23 @@ def main():
     db_structure = {"items": []}
     db_file_path = Path(db_file_name)
 
-    example_clients = [
-        [
-            "supernick",
-            "1231231234",
-            "Dima",
-            "Ivanov",
-            "+79154127022",
-        ],
-        [
-            "zaza",
-            "31365464567",
-            "Sveta",
-            "Zhukova",
-            "+79515521906",
-        ],
+    client_example = [
+        "supernick",
+        "1231231234",
+        "Dima",
+        "Ivanov",
+        "+79154127022",
     ]
 
     create_db(db_file_path, db_structure, db_file_name)
     loaded_db = load_json(db_file_path)
 
-    for example_client in example_clients:
-        add_client(loaded_db, example_client)
+    add_client(loaded_db, client_example)
 
     save_json(loaded_db, db_file_name)
 
     clients_table = loaded_db["items"][0]["items"]
     print(search_client(clients_table, '+79515521906'))
-
 
 if __name__ == "__main__":
     main()
