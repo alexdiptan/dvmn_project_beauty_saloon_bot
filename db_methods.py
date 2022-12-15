@@ -36,7 +36,7 @@ def create_table(db_structure, table_name: str, table_foreign: int) -> dict:
 
 def add_client(db_structure: dict, client_fields: list) -> dict:
     now_date = datetime.datetime.now()
-    date_time = now_date.strftime("%d.%m.%Y %H:%M:%S")
+    client_created_at = now_date.strftime("%d.%m.%Y %H:%M:%S")
 
     (
         tg_user_name,
@@ -53,7 +53,7 @@ def add_client(db_structure: dict, client_fields: list) -> dict:
         "last_name": last_name,
         "phone": phone,
         "client_orders": [],
-        "created_at": date_time,
+        "created_at": client_created_at,
     }
 
     clients_table = db_structure["items"][0]["items"]
@@ -64,7 +64,7 @@ def add_client(db_structure: dict, client_fields: list) -> dict:
     return db_structure
 
 
-def search_client(clients: dict, phone):
+def search_client(clients: dict, phone: str) -> dict:
     found_client = None
     for client in clients:
         if phone in client.values():
@@ -73,12 +73,43 @@ def search_client(clients: dict, phone):
     return found_client
 
 
-def search_client_order():
-    pass
+def add_client_order(service_db: dict, order_fields: list, client_phone: str):
+    clients = service_db["items"][0]["items"]
+    clients_table = service_db["items"][0]
+    clients_table.setdefault("last_order_id", 0)
+    now_date = datetime.datetime.now()
+    order_created_at = now_date.strftime("%d.%m.%Y %H:%M:%S")
+    found_client = search_client(clients, client_phone)
 
+    (
+        service_name,
+        service_price,
+        specialist,
+        timeslot,
+    ) = order_fields
 
-def add_client_order():
-    pass
+    client_order = {
+        "order_id": "",
+        "service_name": service_name,
+        "service_price": service_price,
+        "specialist": specialist,
+        "timeslot": timeslot,
+        "order_status": "",
+        "created_at": order_created_at,
+        "competed_at": "",
+    }
+
+    filled_db = None
+
+    if found_client:
+        clients_table["last_order_id"] += 1
+        client_order["order_id"] = clients_table["last_order_id"]
+        found_client["client_orders"].append(client_order)
+        found_client.setdefault("last_client_order", {})
+        found_client["last_client_order"] = client_order
+        filled_db = service_db
+
+    return filled_db
 
 
 def main():
@@ -89,33 +120,38 @@ def main():
     db_structure = {"items": []}
     db_file_path = Path(db_file_name)
 
-    example_clients = [
-        [
-            "supernick",
-            "1231231234",
-            "Dima",
-            "Ivanov",
-            "+79154127022",
-        ],
-        [
-            "zaza",
-            "31365464567",
-            "Sveta",
-            "Zhukova",
-            "+79515521906",
-        ],
+    client_example = [
+        "zero_man",
+        "75675231234",
+        "Igor",
+        "Sheremrtiev",
+        "+79114210967",
+    ]
+
+    order_example = [
+        "Тату",
+        "4500 RUR",
+        "Мастер 7",
+        "11:00",
     ]
 
     create_db(db_file_path, db_structure, db_file_name)
     loaded_db = load_json(db_file_path)
 
-    for example_client in example_clients:
-        add_client(loaded_db, example_client)
+    add_client(loaded_db, client_example)
 
     save_json(loaded_db, db_file_name)
 
     clients_table = loaded_db["items"][0]["items"]
-    print(search_client(clients_table, '+79515521906'))
+
+    add_client_order(loaded_db, order_example, "+79114210967")
+
+    save_json(loaded_db, db_file_name)
+    client = search_client(clients_table, "+79154127022")
+
+    if client is not None:
+        for client_order in client["client_orders"]:
+            print(client_order)
 
 
 if __name__ == "__main__":
