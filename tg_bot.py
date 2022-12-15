@@ -111,3 +111,6 @@ async def get_phone(message: types.Message, state: FSMContext):
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
+
+
+#test test test
