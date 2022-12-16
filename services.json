@@ -1,0 +1,64 @@
+{
+    "services": [
+        {
+            "Макияж": [{
+                "service_price": 1500,
+                "service_duration": 1
+            }]
+        },
+        {
+            "Тату и Пирсинг": [{
+                "service_price": 7500,
+                "service_duration": 3
+            }]
+        },
+        {
+            "Стрижка": [{
+                "service_price": 2500,
+                "service_duration": 1
+            }]
+        },
+        {
+            "Косметология": [{
+            "service_price": 5000,
+            "service_duration": 2
+            }]
+        },
+        {
+            "Брови": [{
+                "service_price": 1000,
+                "service_duration": 1
+                }]
+        },
+        {
+            "Маникюр": [{
+                "service_price": 1500,
+                "service_duration": 1
+                }]
+        },
+        {
+            "Педикюр": [{
+                "service_price": 1700,
+                "service_duration": 1
+                }]
+        },
+        {
+            "Укладка": [{
+                "service_price": 1500,
+                "service_duration": 1
+                }]
+        },
+        {
+            "Шугаринг": [{
+                "service_price": 3500,
+                "service_duration": 1
+                }]
+        },
+        {
+            "Покраска": [{
+                "service_price": 7500,
+                "service_duration": 3
+                }]
+        }
+    ]
+}

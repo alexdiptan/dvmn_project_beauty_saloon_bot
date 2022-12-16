@@ -1,4 +1,5 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
+import json
 
 # KeyboardButton - экземпляр кнопки
 # ReplyKeyboardMarkup - меню для бота
@@ -6,20 +7,16 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
 # --- Main Menu ---
 btn_main_menu = KeyboardButton('Главное меню')
+
 btn_make_appointment = KeyboardButton('Записаться на процедуру')
 btn_user_profile = KeyboardButton('Личный кабинет')
+
 main_menu = ReplyKeyboardMarkup(resize_keyboard = True).add(btn_make_appointment, btn_user_profile)
-
-
-# --- Orders History ---
-btn_orders_history = KeyboardButton('История заказов')
-user_profile = ReplyKeyboardMarkup(resize_keyboard = True).add(btn_orders_history)
-orders_history = ReplyKeyboardMarkup(resize_keyboard = True).add(btn_main_menu)
-
 
 
 # --- Make Appointment ---
 ## --- Pick Premise ---
+
 with open('premises.json', 'r', encoding='utf-8') as file:
     premises = json.load(file)
 
@@ -36,40 +33,50 @@ pick_premises_menu = ReplyKeyboardMarkup(resize_keyboard = True).add(btn_premise
 
 ## --- Pick Service ---
 
-btn_pick_service_haircut = KeyboardButton('Парикмахерские услуги')
-btn_pick_service_makeup = KeyboardButton('Макияж')
-btn_pick_service_esthetics = KeyboardButton('Косметология')
-btn_pick_service_tattoo = KeyboardButton('Тату и пирсинг')
-btn_pick_service_brows = KeyboardButton('Брови')
+with open('services.json', 'r', encoding='utf-8') as file:
+    services = json.load(file)
 
-pick_service_menu = ReplyKeyboardMarkup(resize_keyboard = True).add(btn_pick_service_haircut, btn_pick_service_makeup, 
-                                                                    btn_pick_service_esthetics, btn_pick_service_tattoo, 
-                                                                    btn_pick_service_brows)
+btn_pick_service_makeup = KeyboardButton('Макияж')
+btn_pick_service_tattoo = KeyboardButton('Тату и Пирсинг')
+btn_pick_service_haircut = KeyboardButton('Стрижка')
+btn_pick_service_esthetics = KeyboardButton('Косметология')
+btn_pick_service_brows = KeyboardButton('Брови')
+btn_pick_service_manicure = KeyboardButton('Маникюр')
+btn_pick_service_pedicure = KeyboardButton('Педикюр')
+btn_pick_service_styling = KeyboardButton('Укладка')
+btn_pick_service_sugaring = KeyboardButton('Шугаринг')
+btn_pick_service_dying = KeyboardButton('Покраска')
+
+pick_service_menu = ReplyKeyboardMarkup(resize_keyboard = True).add(btn_pick_service_makeup, btn_pick_service_tattoo, btn_pick_service_haircut, 
+                                                                    btn_pick_service_esthetics, btn_pick_service_brows, btn_pick_service_manicure,
+                                                                    btn_pick_service_pedicure, btn_pick_service_styling, btn_pick_service_sugaring,
+                                                                    btn_pick_service_dying,)
 
 btn_return_to_service_menu = KeyboardButton('Вернуться к списку услуг')
 
 
+### --- Pick Specialist ---
 
+with open('specialists.json', 'r', encoding='utf-8') as file:
+    specialists = json.load(file)
 
-### --- Pick Date & Specialist ---
-btn_pick_date_time_menu = KeyboardButton('Выбрать дату и время')
 btn_pick_specialist_menu = KeyboardButton('Выбрать мастера')
 
-btn_pick_specialist_01 = KeyboardButton('Мастер 1')
-btn_pick_specialist_02 = KeyboardButton('Мастер 2')
-btn_pick_specialist_03 = KeyboardButton('Мастер 3')
-btn_pick_specialist_04 = KeyboardButton('Мастер 4')
-btn_pick_specialist_05 = KeyboardButton('Мастер 5')
-btn_pick_specialist_06 = KeyboardButton('Мастер 6')
-btn_pick_specialist_07 = KeyboardButton('Мастер 7')
-btn_pick_specialist_08 = KeyboardButton('Мастер 8')
-btn_pick_specialist_09 = KeyboardButton('Мастер 9')
-btn_pick_specialist_10 = KeyboardButton('Мастер 10')
-btn_pick_specialist_11 = KeyboardButton('Мастер 11')
-btn_pick_specialist_12 = KeyboardButton('Мастер 12')
-btn_pick_specialist_13 = KeyboardButton('Мастер 13')
-btn_pick_specialist_14 = KeyboardButton('Мастер 14')
-btn_pick_specialist_15 = KeyboardButton('Мастер 15')
+btn_pick_specialist_01 = KeyboardButton('Brad Pitt')
+btn_pick_specialist_02 = KeyboardButton('Sir Alex Ferguson')
+btn_pick_specialist_03 = KeyboardButton('Mike Myers')
+btn_pick_specialist_04 = KeyboardButton('Leatherface')
+btn_pick_specialist_05 = KeyboardButton('Ilya Osipov')
+btn_pick_specialist_06 = KeyboardButton('Leo Messi')
+btn_pick_specialist_07 = KeyboardButton('Arnold Schwarzenegger')
+btn_pick_specialist_08 = KeyboardButton('Wednesday')
+btn_pick_specialist_09 = KeyboardButton('Witcher')
+btn_pick_specialist_10 = KeyboardButton('Charlize Theron')
+btn_pick_specialist_11 = KeyboardButton('Jen Aniston')
+btn_pick_specialist_12 = KeyboardButton('Rachel McAdams')
+btn_pick_specialist_13 = KeyboardButton('Benedict Cumberbatch')
+btn_pick_specialist_14 = KeyboardButton('Nathalie Emmanuel')
+btn_pick_specialist_15 = KeyboardButton('Ewan McGregor')
 
 
 return_or_pick_specialist = ReplyKeyboardMarkup(resize_keyboard = True).add(btn_return_to_service_menu, btn_pick_specialist_menu)
@@ -77,6 +84,13 @@ pick_specialist_menu = ReplyKeyboardMarkup(resize_keyboard = True).add(btn_pick_
                                                             btn_pick_specialist_06, btn_pick_specialist_07, btn_pick_specialist_08, btn_pick_specialist_09, btn_pick_specialist_10,
                                                             btn_pick_specialist_11, btn_pick_specialist_12, btn_pick_specialist_13, btn_pick_specialist_14, btn_pick_specialist_15,
                                                             btn_return_to_service_menu, btn_main_menu)
+
+
+
+
+
+
+
 
 
 btn_pick_date_01 = KeyboardButton('16 декабря, 2022')
@@ -107,8 +121,12 @@ pick_time_menu = ReplyKeyboardMarkup(resize_keyboard = True).add(btn_pick_time_0
 btn_last_order_repeat = pick_date_menu
 last_order_repeat_menu = ReplyKeyboardMarkup(resize_keyboard = True).add(btn_last_order_repeat, btn_main_menu)
 
-# --- Orders History ---
 
+# --- Orders History ---
+btn_orders_history = KeyboardButton('История заказов')
+
+user_profile = ReplyKeyboardMarkup(resize_keyboard = True).add(btn_orders_history)
+orders_history = ReplyKeyboardMarkup(resize_keyboard = True).add(btn_main_menu)
 btn_orders_history_01 = KeyboardButton('Услуга #00001\n2022-12-05 11:00 \nБрови\nМосква, Салон 2\nМастер 8')
 btn_orders_history_02 = KeyboardButton('Услуга #00002\n2022-12-07 13:00 \nМакияж\nМосква, Салон 1\nМастер 4')
 orders_history_menu = ReplyKeyboardMarkup(resize_keyboard = True).add(btn_orders_history_01, btn_orders_history_02, 
