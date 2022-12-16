@@ -1,0 +1,52 @@
+{
+    "premises": [
+        {
+            "premise_name": "Beauty Hair Lab Studio",
+            "premise_city": "Москва",
+            "premise_address": "Певческий пер., 4 строение 1, Москва, 109028",
+            "premise_coordinates": "55.755182, 37.642432",
+            "premise_phone": "+79689611088",
+            "tag": "QJ2R+RQ Tagansky District, Moscow, Russia"
+        },
+        {
+            "premise_name": "Birdie",
+            "premise_city": "Москва",
+            "premise_address": "Старопименовский пер., 6, Москва, 127006",
+            "premise_coordinates": "55.769476, 37.600890",
+            "premise_phone": "+79296989642",
+            "tag": "QJ92+GF Tverskoy District, Moscow, Russia"
+        },
+        {
+            "premise_name": "Expat Salon",
+            "premise_city": "Москва",
+            "premise_address": "Малый Патриарший пер., 3, Москва, 123001",
+            "premise_coordinates": "55.764261, 37.591964",
+            "premise_phone": "+74956503749",
+            "tag": "QH7R+5M Presnensky District, Moscow, Russia"
+        },
+        {
+            "premise_name": "Brush Beauty Salon",
+            "premise_city": "Москва",
+            "premise_address": "Трубецкая ул., 28с1, Москва, 119048",
+            "premise_coordinates": "55.724838, 37.575828",
+            "premise_phone": "+79255441113",
+            "tag": "PHGG+MP Khamovniki District, Moscow, Russia"
+          },
+          {
+            "premise_name": "Beauty Point",
+            "premise_city": "Москва",
+            "premise_address": "Ходынский б-р, 4, Москва, 125167",
+            "premise_coordinates": "55.790570, 37.524512",
+            "premise_phone": "+79035498776",
+            "tag": "QGRH+5H Khoroshyovsky District, Moscow, Russia"
+        },
+        {
+            "premise_name": "Салон красоты IRIS, Войковская",
+            "premise_city": "Москва",
+            "premise_address": "Зои и Александра Космодемьянских ул., д. 4, корп. 2, Москва, 125171",
+            "premise_coordinates": "55.818254, 37.501180",
+            "premise_phone": "+74952780780",
+            "tag": "RG92+CV Voykovsky District, Moscow, Russia"
+        }
+    ]
+}

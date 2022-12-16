@@ -11,6 +11,7 @@ from phonenumbers.phonenumberutil import NumberParseException
 
 from registration import Register
 import db_methods
+import markups as navi
 
 env = Env()
 env.read_env()
@@ -19,9 +20,61 @@ db_file_name = env.str("DB_FILE_NAME", "db.json")
 db_file_path = Path(db_file_name)
 loaded_db = db_methods.load_json(db_file_path)
 
+premises_db_file_name = env.str("PREMISES_DB_FILE_NAME", "premises.json")
+premises_db_file_path = Path(premises_db_file_name)
+loaded_premises_db = db_methods.load_json(premises_db_file_path)
+
+
 logging.basicConfig(level=logging.INFO)
 bot = Bot(token=tg_token)
 dp = Dispatcher(bot, storage=MemoryStorage())
+
+
+# --- Main Menu ---
+## When /start or /help command received the bot would give 2 buttons: "Записаться на процедуру" & "Личный кабинет" (reply_markup = navi.main_menu)
+
+@dp.message_handler(commands=['start', 'help'])
+async def send_welcome(message: types.Message):
+    """
+    This handler will be called when user sends `/start` or `/help` command
+    """
+    await bot.send_message(message.from_user.id, "Привет, {0.first_name}!\nЯ - бот BeautyCity, запишемся на процедуру?".format(message.from_user), reply_markup = navi.main_menu)
+
+
+# --- Make Appointment ---
+## When "Записаться на процедуру" is tapped the bot will display the list of available premises
+### Geolocation suggestions might be added later here
+
+@dp.message_handler()
+async def bot_message(message: types.Message):
+    """
+    This handler will be called when user sends a message
+    """
+    if message.text == 'Записаться на процедуру':
+        await bot.send_message(message.from_user.id, f"Какой салон Вам больше нравится?\n\n{premises['premises'][0]['premise_name']}: {premises['premises'][0]['premise_address']}\n\n{premises['premises'][1]['premise_name']}: {premises['premises'][1]['premise_address']}\n\n{premises['premises'][2]['premise_name']}: {premises['premises'][2]['premise_address']}\n\n{premises['premises'][3]['premise_name']}: {premises['premises'][3]['premise_address']}\n\n{premises['premises'][4]['premise_name']}: {premises['premises'][4]['premise_address']}\n\n{premises['premises'][5]['premise_name']}: {premises['premises'][5]['premise_address']}", reply_markup = navi.pick_premises_menu)
+
+
+## When the salon is tapped the bot will display the list of available services
+## --- Pick Premise ---
+
+    elif message.text == 'Beauty Hair Lab Studio"':
+        await bot.send_message(message.from_user.id, f"Вы выбрали салон по адресу: {premises['premises'][0]['premise_address']}\n\nКакая услуга Вас интересует?", reply_markup = navi.pick_service_menu)
+
+    elif message.text == 'Birdie':
+        await bot.send_message(message.from_user.id, f"Вы выбрали салон по адресу: {premises['premises'][1]['premise_address']}\n\nКакая услуга Вас интересует?", reply_markup = navi.pick_service_menu)
+
+    elif message.text == 'Expat Salon':
+        await bot.send_message(message.from_user.id, f"Вы выбрали салон по адресу: {premises['premises'][2]['premise_address']}\n\nКакая услуга Вас интересует?", reply_markup = navi.pick_service_menu)
+
+    elif message.text == 'Brush Beauty Salon':
+        await bot.send_message(message.from_user.id, f"Вы выбрали салон по адресу: {premises['premises'][3]['premise_address']}\n\nКакая услуга Вас интересует?", reply_markup = navi.pick_service_menu)
+
+    elif message.text == 'Beauty Point':
+        await bot.send_message(message.from_user.id, f"Вы выбрали салон по адресу: {premises['premises'][4]['premise_address']}\n\nКакая услуга Вас интересует?", reply_markup = navi.pick_service_menu)
+
+    elif message.text == 'Салон красоты IRIS, Войковская':
+        await bot.send_message(message.from_user.id, f"Вы выбрали салон по адресу: {premises['premises'][5]['premise_address']}\n\nКакая услуга Вас интересует?", reply_markup = navi.pick_service_menu)
+
 
 
 @dp.message_handler(commands=['registration'])
