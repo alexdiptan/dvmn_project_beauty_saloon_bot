@@ -24,6 +24,9 @@ premises_db_file_name = env.str("PREMISES_DB_FILE_NAME", "premises.json")
 premises_db_file_path = Path(premises_db_file_name)
 loaded_premises_db = db_methods.load_json(premises_db_file_path)
 
+services_db_file_name = env.str("services_DB_FILE_NAME", "services.json")
+services_db_file_path = Path(services_db_file_name)
+loaded_services_db = db_methods.load_json(services_db_file_path)
 
 logging.basicConfig(level=logging.INFO)
 bot = Bot(token=tg_token)
@@ -45,6 +48,8 @@ async def send_welcome(message: types.Message):
 ## When "Записаться на процедуру" is tapped the bot will display the list of available premises
 ### Geolocation suggestions might be added later here
 
+premises = loaded_premises_db
+
 @dp.message_handler()
 async def bot_message(message: types.Message):
     """
@@ -58,22 +63,50 @@ async def bot_message(message: types.Message):
 ## --- Pick Premise ---
 
     elif message.text == 'Beauty Hair Lab Studio"':
-        await bot.send_message(message.from_user.id, f"Вы выбрали салон по адресу: {premises['premises'][0]['premise_address']}\n\nКакая услуга Вас интересует?", reply_markup = navi.pick_service_menu)
+        await bot.send_message(message.from_user.id, f"Вы выбрали {premises['premises'][0]['premise_name']} по адресу: {premises['premises'][0]['premise_address']}\n\nКакая услуга Вас интересует?", reply_markup = navi.pick_service_menu)
 
     elif message.text == 'Birdie':
-        await bot.send_message(message.from_user.id, f"Вы выбрали салон по адресу: {premises['premises'][1]['premise_address']}\n\nКакая услуга Вас интересует?", reply_markup = navi.pick_service_menu)
+        await bot.send_message(message.from_user.id, f"Вы выбрали {premises['premises'][1]['premise_name']} по адресу: {premises['premises'][1]['premise_address']}\n\nКакая услуга Вас интересует?", reply_markup = navi.pick_service_menu)
 
     elif message.text == 'Expat Salon':
-        await bot.send_message(message.from_user.id, f"Вы выбрали салон по адресу: {premises['premises'][2]['premise_address']}\n\nКакая услуга Вас интересует?", reply_markup = navi.pick_service_menu)
+        await bot.send_message(message.from_user.id, f"Вы выбрали {premises['premises'][2]['premise_name']} по адресу: {premises['premises'][2]['premise_address']}\n\nКакая услуга Вас интересует?", reply_markup = navi.pick_service_menu)
 
     elif message.text == 'Brush Beauty Salon':
-        await bot.send_message(message.from_user.id, f"Вы выбрали салон по адресу: {premises['premises'][3]['premise_address']}\n\nКакая услуга Вас интересует?", reply_markup = navi.pick_service_menu)
+        await bot.send_message(message.from_user.id, f"Вы выбрали {premises['premises'][3]['premise_name']} по адресу: {premises['premises'][3]['premise_address']}\n\nКакая услуга Вас интересует?", reply_markup = navi.pick_service_menu)
 
     elif message.text == 'Beauty Point':
-        await bot.send_message(message.from_user.id, f"Вы выбрали салон по адресу: {premises['premises'][4]['premise_address']}\n\nКакая услуга Вас интересует?", reply_markup = navi.pick_service_menu)
+        await bot.send_message(message.from_user.id, f"Вы выбрали {premises['premises'][4]['premise_name']} по адресу: {premises['premises'][4]['premise_address']}\n\nКакая услуга Вас интересует?", reply_markup = navi.pick_service_menu)
 
     elif message.text == 'Салон красоты IRIS, Войковская':
-        await bot.send_message(message.from_user.id, f"Вы выбрали салон по адресу: {premises['premises'][5]['premise_address']}\n\nКакая услуга Вас интересует?", reply_markup = navi.pick_service_menu)
+        await bot.send_message(message.from_user.id, f"Вы выбрали {premises['premises'][5]['premise_name']} по адресу: {premises['premises'][5]['premise_address']}\n\nКакая услуга Вас интересует?", reply_markup = navi.pick_service_menu)
+
+
+premises = loaded_services_db
+## --- Pick Service ---
+
+    elif message.text == 'Вернуться к списку услуг':
+        await bot.send_message(message.from_user.id, 'Возвращаемся к выбору услуг', reply_markup = navi.pick_service_menu)
+
+    elif message.text == 'Макияж':
+        await bot.send_message(message.from_user.id, 'Стоимость услуги Макияж: 3,500.00 USD', reply_markup = navi.return_or_pick_specialist)
+
+    elif message.text == 'Парикмахерские услуги':
+        await bot.send_message(message.from_user.id, 'Стоимость услуги Парикмахерские услуги: 500.00 USD', reply_markup = navi.return_or_pick_specialist)
+
+    elif message.text == 'Косметология':
+        await bot.send_message(message.from_user.id, 'Стоимость услуги Косметология: 750.00 USD', reply_markup = navi.return_or_pick_specialist)
+
+    elif message.text == 'Тату и пирсинг':
+        await bot.send_message(message.from_user.id, 'Стоимость услуги Тату и пирсинг: 1,750.00 USD', reply_markup = navi.return_or_pick_specialist)
+
+    elif message.text == 'Брови':
+        await bot.send_message(message.from_user.id, 'Стоимость услуги Брови: 5,750.00 USD', reply_markup = navi.return_or_pick_specialist)
+
+
+
+
+
+
 
 
 

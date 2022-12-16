@@ -1,4 +1,5 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
+import json
 
 # KeyboardButton - экземпляр кнопки
 # ReplyKeyboardMarkup - меню для бота
@@ -6,13 +7,17 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
 # --- Main Menu ---
 btn_main_menu = KeyboardButton('Главное меню')
+
 btn_make_appointment = KeyboardButton('Записаться на процедуру')
 btn_user_profile = KeyboardButton('Личный кабинет')
+
 main_menu = ReplyKeyboardMarkup(resize_keyboard = True).add(btn_make_appointment, btn_user_profile)
+
 
 
 # --- Orders History ---
 btn_orders_history = KeyboardButton('История заказов')
+
 user_profile = ReplyKeyboardMarkup(resize_keyboard = True).add(btn_orders_history)
 orders_history = ReplyKeyboardMarkup(resize_keyboard = True).add(btn_main_menu)
 
