@@ -1,0 +1,49 @@
+{
+    "specialists": [
+        {
+            "specialist_name": "Brad Pitt"
+        },
+        {
+            "specialist_name": "Sir Alex Ferguson"
+        },
+        {
+            "specialist_name": "Mike Myers"
+        },
+        {
+            "specialist_name": "Leatherface"
+        },
+        {
+            "specialist_name": "Ilya Osipov"
+        },
+        {
+            "specialist_name": "Leo Messi"
+        },
+        {
+            "specialist_name": "Arnold Schwarzenegger"
+        },
+        {
+            "specialist_name": "Wednesday"
+        },
+        {
+            "specialist_name": "Witcher"
+        },
+        {
+            "specialist_name": "Charlize Theron"
+        },
+        {
+            "specialist_name": "Jen Aniston"
+        },
+        {
+            "specialist_name": "Rachel McAdams"
+        },
+        {
+            "specialist_name": "Benedict Cumberbatch"
+        },
+        {
+            "specialist_name": "Nathalie Emmanuel"
+        },
+        {
+            "specialist_name": "Ewan McGregor"
+        }
+    ]
+}

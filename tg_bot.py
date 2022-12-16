@@ -24,11 +24,19 @@ premises_db_file_name = env.str("PREMISES_DB_FILE_NAME", "premises.json")
 premises_db_file_path = Path(premises_db_file_name)
 loaded_premises_db = db_methods.load_json(premises_db_file_path)
 
+services_db_file_name = env.str("services_DB_FILE_NAME", "services.json")
+services_db_file_path = Path(services_db_file_name)
+loaded_services_db = db_methods.load_json(services_db_file_path)
+
+specialists_db_file_name = env.str("specialists_DB_FILE_NAME", "specialists.json")
+specialists_db_file_path = Path(specialists_db_file_name)
+loaded_specialists_db = db_methods.load_json(specialists_db_file_path)
 
 logging.basicConfig(level=logging.INFO)
 bot = Bot(token=tg_token)
 dp = Dispatcher(bot, storage=MemoryStorage())
 
+order_id = 0
 
 # --- Main Menu ---
 ## When /start or /help command received the bot would give 2 buttons: "Записаться на процедуру" & "Личный кабинет" (reply_markup = navi.main_menu)
@@ -46,7 +54,7 @@ async def send_welcome(message: types.Message):
 ### Geolocation suggestions might be added later here
 
 @dp.message_handler()
-async def bot_message(message: types.Message):
+async def make_order(message: types.Message):
     """
     This handler will be called when user sends a message
     """
@@ -54,26 +62,140 @@ async def bot_message(message: types.Message):
         await bot.send_message(message.from_user.id, f"Какой салон Вам больше нравится?\n\n{premises['premises'][0]['premise_name']}: {premises['premises'][0]['premise_address']}\n\n{premises['premises'][1]['premise_name']}: {premises['premises'][1]['premise_address']}\n\n{premises['premises'][2]['premise_name']}: {premises['premises'][2]['premise_address']}\n\n{premises['premises'][3]['premise_name']}: {premises['premises'][3]['premise_address']}\n\n{premises['premises'][4]['premise_name']}: {premises['premises'][4]['premise_address']}\n\n{premises['premises'][5]['premise_name']}: {premises['premises'][5]['premise_address']}", reply_markup = navi.pick_premises_menu)
 
 
-## When the salon is tapped the bot will display the list of available services
+## When the appointment is tapped the bot will display the list of available premises
 ## --- Pick Premise ---
 
-    elif message.text == 'Beauty Hair Lab Studio"':
-        await bot.send_message(message.from_user.id, f"Вы выбрали салон по адресу: {premises['premises'][0]['premise_address']}\n\nКакая услуга Вас интересует?", reply_markup = navi.pick_service_menu)
+    premises = loaded_premises_db
+
+    elif message.text == 'Beauty Hair Lab Studio':
+        await bot.send_message(message.from_user.id, f"Вы выбрали {premises['premises'][0]['premise_name']} по адресу: {premises['premises'][0]['premise_address']}\n\nКакая услуга Вас интересует?", reply_markup = navi.pick_service_menu)
 
     elif message.text == 'Birdie':
-        await bot.send_message(message.from_user.id, f"Вы выбрали салон по адресу: {premises['premises'][1]['premise_address']}\n\nКакая услуга Вас интересует?", reply_markup = navi.pick_service_menu)
+        await bot.send_message(message.from_user.id, f"Вы выбрали {premises['premises'][1]['premise_name']} по адресу: {premises['premises'][1]['premise_address']}\n\nКакая услуга Вас интересует?", reply_markup = navi.pick_service_menu)
 
     elif message.text == 'Expat Salon':
-        await bot.send_message(message.from_user.id, f"Вы выбрали салон по адресу: {premises['premises'][2]['premise_address']}\n\nКакая услуга Вас интересует?", reply_markup = navi.pick_service_menu)
+        await bot.send_message(message.from_user.id, f"Вы выбрали {premises['premises'][2]['premise_name']} по адресу: {premises['premises'][2]['premise_address']}\n\nКакая услуга Вас интересует?", reply_markup = navi.pick_service_menu)
 
     elif message.text == 'Brush Beauty Salon':
-        await bot.send_message(message.from_user.id, f"Вы выбрали салон по адресу: {premises['premises'][3]['premise_address']}\n\nКакая услуга Вас интересует?", reply_markup = navi.pick_service_menu)
+        await bot.send_message(message.from_user.id, f"Вы выбрали {premises['premises'][3]['premise_name']} по адресу: {premises['premises'][3]['premise_address']}\n\nКакая услуга Вас интересует?", reply_markup = navi.pick_service_menu)
 
     elif message.text == 'Beauty Point':
-        await bot.send_message(message.from_user.id, f"Вы выбрали салон по адресу: {premises['premises'][4]['premise_address']}\n\nКакая услуга Вас интересует?", reply_markup = navi.pick_service_menu)
+        await bot.send_message(message.from_user.id, f"Вы выбрали {premises['premises'][4]['premise_name']} по адресу: {premises['premises'][4]['premise_address']}\n\nКакая услуга Вас интересует?", reply_markup = navi.pick_service_menu)
 
     elif message.text == 'Салон красоты IRIS, Войковская':
-        await bot.send_message(message.from_user.id, f"Вы выбрали салон по адресу: {premises['premises'][5]['premise_address']}\n\nКакая услуга Вас интересует?", reply_markup = navi.pick_service_menu)
+        await bot.send_message(message.from_user.id, f"Вы выбрали {premises['premises'][5]['premise_name']} по адресу: {premises['premises'][5]['premise_address']}\n\nКакая услуга Вас интересует?", reply_markup = navi.pick_service_menu)
+
+    if message.text in ['Beauty Hair Lab Studio', 'Birdie', 'Expat Salon', 'Brush Beauty Salon', 'Beauty Point', 'Салон красоты IRIS, Войковская']:
+        premise_name = message.text
+
+
+## When the salon is tapped the bot will display the list of available services
+## --- Pick Service ---
+
+    services = loaded_services_db
+
+    elif message.text == 'Вернуться к списку услуг':
+        await bot.send_message(message.from_user.id, 'Возвращаемся к выбору услуг', reply_markup = navi.pick_service_menu)
+        
+    elif message.text == 'Макияж':
+        service_price = services['services'][0]['Макияж'][0]['service_price']
+        await bot.send_message(message.from_user.id, f'Стоимость услуги Макияж: {service_price} RUB', reply_markup = navi.return_or_pick_specialist)
+
+    elif message.text == 'Тату и Пирсинг':
+        service_price = services['services'][1]['Тату и Пирсинг'][0]['service_price']
+        await bot.send_message(message.from_user.id, f'Стоимость услуги Тату и Пирсинг: {service_price} RUB', reply_markup = navi.return_or_pick_specialist)
+
+    elif message.text == 'Стрижка':
+        service_price = services['services'][2]['Стрижка'][0]['service_price']
+        await bot.send_message(message.from_user.id, f'Стоимость услуги Стрижка: {service_price} RUB', reply_markup = navi.return_or_pick_specialist)
+
+    elif message.text == 'Косметология':
+        service_price = services['services'][3]['Косметология'][0]['service_price']
+        await bot.send_message(message.from_user.id, f'Стоимость услуги Косметология: {service_price} RUB', reply_markup = navi.return_or_pick_specialist)
+
+    elif message.text == 'Брови':
+        service_price = services['services'][4]['Брови'][0]['service_price']
+        await bot.send_message(message.from_user.id, f'Стоимость услуги Брови: {service_price} RUB', reply_markup = navi.return_or_pick_specialist)
+
+    elif message.text == 'Маникюр':
+        service_price = services['services'][5]['Маникюр'][0]['service_price']
+        await bot.send_message(message.from_user.id, f'Стоимость услуги Маникюр: {service_price} RUB', reply_markup = navi.return_or_pick_specialist)
+
+    elif message.text == 'Педикюр':
+        service_price = services['services'][6]['Педикюр'][0]['service_price']
+        await bot.send_message(message.from_user.id, f'Стоимость услуги Педикюр: {service_price} RUB', reply_markup = navi.return_or_pick_specialist)
+
+    elif message.text == 'Укладка':
+        service_price = services['services'][7]['Укладка'][0]['service_price']
+        await bot.send_message(message.from_user.id, f'Стоимость услуги Укладка: {service_price} RUB', reply_markup = navi.return_or_pick_specialist)
+
+    elif message.text == 'Шугаринг':
+        service_price = services['services'][8]['Шугаринг'][0]['service_price']
+        await bot.send_message(message.from_user.id, f'Стоимость услуги Шугаринг: {service_price} RUB', reply_markup = navi.return_or_pick_specialist)
+
+    elif message.text == 'Покраска':
+        service_price = services['services'][9]['Покраска'][0]['service_price']
+        await bot.send_message(message.from_user.id, f'Стоимость услуги Покраска: {service_price} RUB', reply_markup = navi.return_or_pick_specialist)
+
+    if message.text in ['Макияж', 'Тату и Пирсинг', 'Стрижка', 'Косметология', 'Брови', 'Маникюр', 'Педикюр', 'Укладка', 'Шугаринг', 'Покраска']:
+        service_name = message.text
+
+
+## When the service is tapped the bot will display the list of available specialists
+## --- Pick Specialist ---
+
+    specialists = loaded_specialists_db
+
+    elif message.text == 'Выбрать мастера':
+        await bot.send_message(message.from_user.id, 'Какого мастера Вы предпочитаете?', reply_markup = navi.pick_specialist_menu)
+
+
+    if message.text in [
+        'Brad Pitt', 'Sir Alex Ferguson', 'Mike Myers', 'Leatherface', 'Ilya Osipov', 'Leo Messi', 'Arnold Schwarzenegger', 'Wednesday',
+        'Witcher', 'Charlize Theron', 'Jen Aniston', 'Rachel McAdams', 'Benedict Cumberbatch', 'Nathalie Emmanuel', 'Ewan McGregor',
+        ]:
+        await bot.send_message(message.from_user.id, 'На какую дату Вас записать к мастеру?', reply_markup = navi.pick_date_menu)
+        specialist = message.text
+
+
+## When the specialist is tapped the bot will display the list of available dates
+## --- Pick Specialist ---
+
+    elif message.text in [
+        '16 декабря, 2022', '17 декабря, 2022', '18 декабря, 2022', '19 декабря, 2022', '20 декабря, 2022',
+        ]:
+        await bot.send_message(message.from_user.id, 'На какое время Вас записать к мастеру?', reply_markup = navi.pick_time_menu)
+
+
+    elif message.text in [
+        '10-00', '11-00', '12-00', '13-00', '14-00', '15-00', '16-00', '17-00', '18-00', '19-00'
+        ]:
+        await bot.send_message(message.from_user.id, 'Запись сделана, подтвердите, пожалуйста, регистрацию', reply_markup = navi.registration_menu)
+
+
+
+
+
+
+
+
+
+    client_order = {
+        "order_id": "",
+        "service_name": service_name,  ====================
+        "service_price": service_price, ====================
+        "specialist": specialist, ====================
+        "timeslot": timeslot,
+        "order_status": "",
+        "created_at": order_created_at,
+        "competed_at": "",
+        "premise_name": premise_name   ====================
+    }
+
+
+
+
+
 
 
 
