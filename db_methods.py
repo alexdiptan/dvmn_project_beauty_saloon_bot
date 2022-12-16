@@ -82,6 +82,7 @@ def add_client_order(service_db: dict, order_fields: list, client_phone: str):
     found_client = search_client(clients, client_phone)
 
     (
+        premise_name,
         service_name,
         service_price,
         specialist,
@@ -90,6 +91,7 @@ def add_client_order(service_db: dict, order_fields: list, client_phone: str):
 
     client_order = {
         "order_id": "",
+        "premise_name": premise_name,
         "service_name": service_name,
         "service_price": service_price,
         "specialist": specialist,
@@ -129,6 +131,7 @@ def main():
     ]
 
     order_example = [
+        "Салон на Тверской",
         "Тату",
         "4500 RUR",
         "Мастер 7",
