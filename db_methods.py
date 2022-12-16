@@ -72,53 +72,13 @@ def search_client(clients: dict, phone):
 
     return found_client
 
-# Added search client orders, please check
-def search_client_order(orders: dict, order_id):
-        found_order = None
-    for order in orders:
-        if order_id in orders.values():
-            found_order = order
 
-    return found_order
+def search_client_order():
+    pass
 
 
-def add_client_order(db_structure: dict, order_fields: list) -> dict:
-    now_date = datetime.datetime.now()
-    date_time = now_date.strftime("%d.%m.%Y %H:%M:%S")
-
-    (
-        tg_user_name,
-        tg_chat_id,
-        first_name,
-        last_name,
-        phone,
-        premise_name,
-        service_name,
-        service_scheduled_date,
-        service_scheduled_time,
-        order_id,
-    ) = order_fields
-
-    order_data = {
-        "tg_user_name": tg_user_name,
-        "tg_chat_id": tg_chat_id,
-        "first_name": first_name,
-        "last_name": last_name,
-        "phone": phone,
-        "created_at": date_time,
-        "premise_name": premise_name,
-        "service_name": service_name,
-        "service_scheduled_date": service_scheduled_date,
-        "service_scheduled_time": service_scheduled_time,
-        "order_id" = order_id,
-    }
-
-    orders_table = db_structure["items"][0]["items"]
-
-    if not search_client_order(orders_table, order_id):
-        orders_table.append(order_data)
-
-    return db_structure
+def add_client_order():
+    pass
 
 
 def main():
