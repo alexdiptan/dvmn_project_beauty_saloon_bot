@@ -24,17 +24,20 @@ premises_db_file_name = env.str("PREMISES_DB_FILE_NAME", "premises.json")
 premises_db_file_path = Path(premises_db_file_name)
 loaded_premises_db = db_methods.load_json(premises_db_file_path)
 
-services_db_file_name = env.str("services_DB_FILE_NAME", "services.json")
+services_db_file_name = env.str("SERVICES_DB_FILE_NAME", "services.json")
 services_db_file_path = Path(services_db_file_name)
 loaded_services_db = db_methods.load_json(services_db_file_path)
 
-specialists_db_file_name = env.str("specialists_DB_FILE_NAME", "specialists.json")
+specialists_db_file_name = env.str("SPECIALISTS_DB_FILE_NAME", "specialists.json")
 specialists_db_file_path = Path(specialists_db_file_name)
 loaded_specialists_db = db_methods.load_json(specialists_db_file_path)
 
 logging.basicConfig(level=logging.INFO)
 bot = Bot(token=tg_token)
 dp = Dispatcher(bot, storage=MemoryStorage())
+
+
+# --- Order Counter ---
 
 order_id = 0
 
@@ -58,16 +61,14 @@ async def make_order(message: types.Message):
     """
     This handler will be called when user sends a message
     """
+    premises = loaded_premises_db
     if message.text == 'Записаться на процедуру':
         await bot.send_message(message.from_user.id, f"Какой салон Вам больше нравится?\n\n{premises['premises'][0]['premise_name']}: {premises['premises'][0]['premise_address']}\n\n{premises['premises'][1]['premise_name']}: {premises['premises'][1]['premise_address']}\n\n{premises['premises'][2]['premise_name']}: {premises['premises'][2]['premise_address']}\n\n{premises['premises'][3]['premise_name']}: {premises['premises'][3]['premise_address']}\n\n{premises['premises'][4]['premise_name']}: {premises['premises'][4]['premise_address']}\n\n{premises['premises'][5]['premise_name']}: {premises['premises'][5]['premise_address']}", reply_markup = navi.pick_premises_menu)
-
 
 ## When the appointment is tapped the bot will display the list of available premises
 ## --- Pick Premise ---
 
-    premises = loaded_premises_db
-
-    elif message.text == 'Beauty Hair Lab Studio':
+    if message.text == 'Beauty Hair Lab Studio':
         await bot.send_message(message.from_user.id, f"Вы выбрали {premises['premises'][0]['premise_name']} по адресу: {premises['premises'][0]['premise_address']}\n\nКакая услуга Вас интересует?", reply_markup = navi.pick_service_menu)
 
     elif message.text == 'Birdie':
@@ -85,7 +86,7 @@ async def make_order(message: types.Message):
     elif message.text == 'Салон красоты IRIS, Войковская':
         await bot.send_message(message.from_user.id, f"Вы выбрали {premises['premises'][5]['premise_name']} по адресу: {premises['premises'][5]['premise_address']}\n\nКакая услуга Вас интересует?", reply_markup = navi.pick_service_menu)
 
-    if message.text in ['Beauty Hair Lab Studio', 'Birdie', 'Expat Salon', 'Brush Beauty Salon', 'Beauty Point', 'Салон красоты IRIS, Войковская']:
+    elif message.text in ['Beauty Hair Lab Studio', 'Birdie', 'Expat Salon', 'Brush Beauty Salon', 'Beauty Point', 'Салон красоты IRIS, Войковская']:
         premise_name = message.text
 
 
@@ -94,7 +95,7 @@ async def make_order(message: types.Message):
 
     services = loaded_services_db
 
-    elif message.text == 'Вернуться к списку услуг':
+    if message.text == 'Вернуться к списку услуг':
         await bot.send_message(message.from_user.id, 'Возвращаемся к выбору услуг', reply_markup = navi.pick_service_menu)
         
     elif message.text == 'Макияж':
@@ -137,7 +138,7 @@ async def make_order(message: types.Message):
         service_price = services['services'][9]['Покраска'][0]['service_price']
         await bot.send_message(message.from_user.id, f'Стоимость услуги Покраска: {service_price} RUB', reply_markup = navi.return_or_pick_specialist)
 
-    if message.text in ['Макияж', 'Тату и Пирсинг', 'Стрижка', 'Косметология', 'Брови', 'Маникюр', 'Педикюр', 'Укладка', 'Шугаринг', 'Покраска']:
+    elif message.text in ['Макияж', 'Тату и Пирсинг', 'Стрижка', 'Косметология', 'Брови', 'Маникюр', 'Педикюр', 'Укладка', 'Шугаринг', 'Покраска']:
         service_name = message.text
 
 
@@ -146,11 +147,11 @@ async def make_order(message: types.Message):
 
     specialists = loaded_specialists_db
 
-    elif message.text == 'Выбрать мастера':
+    if message.text == 'Выбрать мастера':
         await bot.send_message(message.from_user.id, 'Какого мастера Вы предпочитаете?', reply_markup = navi.pick_specialist_menu)
 
 
-    if message.text in [
+    elif message.text in [
         'Brad Pitt', 'Sir Alex Ferguson', 'Mike Myers', 'Leatherface', 'Ilya Osipov', 'Leo Messi', 'Arnold Schwarzenegger', 'Wednesday',
         'Witcher', 'Charlize Theron', 'Jen Aniston', 'Rachel McAdams', 'Benedict Cumberbatch', 'Nathalie Emmanuel', 'Ewan McGregor',
         ]:

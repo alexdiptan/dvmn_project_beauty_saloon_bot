@@ -82,8 +82,7 @@ btn_pick_specialist_15 = KeyboardButton('Ewan McGregor')
 return_or_pick_specialist = ReplyKeyboardMarkup(resize_keyboard = True).add(btn_return_to_service_menu, btn_pick_specialist_menu)
 pick_specialist_menu = ReplyKeyboardMarkup(resize_keyboard = True).add(btn_pick_specialist_01, btn_pick_specialist_02, btn_pick_specialist_03, btn_pick_specialist_04, btn_pick_specialist_05,
                                                             btn_pick_specialist_06, btn_pick_specialist_07, btn_pick_specialist_08, btn_pick_specialist_09, btn_pick_specialist_10,
-                                                            btn_pick_specialist_11, btn_pick_specialist_12, btn_pick_specialist_13, btn_pick_specialist_14, btn_pick_specialist_15,
-                                                            btn_return_to_service_menu, btn_main_menu)
+                                                            btn_pick_specialist_11, btn_pick_specialist_12, btn_pick_specialist_13, btn_pick_specialist_14, btn_pick_specialist_15)
 
 
 
@@ -135,9 +134,10 @@ orders_history_menu = ReplyKeyboardMarkup(resize_keyboard = True).add(btn_orders
 
 # --- Registration Menu ---
 
-btn_registration = KeyboardButton('Регистрация')
-registration_menu = ReplyKeyboardMarkup(resize_keyboard = True).add(btn_registration, 
-                                                btn_main_menu)
+
+btn_registration = KeyboardButton('/registration')
+registration_menu = ReplyKeyboardMarkup(resize_keyboard = True).add(btn_registration)
 
 btn_registration_complete = btn_main_menu
 registration_complete = ReplyKeyboardMarkup(resize_keyboard = True).add(btn_main_menu)
+
