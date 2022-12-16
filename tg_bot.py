@@ -174,31 +174,6 @@ async def make_order(message: types.Message):
 
 
 
-
-
-
-
-
-
-    client_order = {
-        "order_id": "",
-        "service_name": service_name,  ====================
-        "service_price": service_price, ====================
-        "specialist": specialist, ====================
-        "timeslot": timeslot,
-        "order_status": "",
-        "created_at": order_created_at,
-        "competed_at": "",
-        "premise_name": premise_name   ====================
-    }
-
-
-
-
-
-
-
-
 @dp.message_handler(commands=['registration'])
 async def make_reservation(message: types.Message):
     name = ReplyKeyboardMarkup(
