@@ -1,52 +1,58 @@
 {
     "premises": [
         {
-            "premise_name": "Beauty Hair Lab Studio",
+            "premise_name": "Beauty Hair",
             "premise_city": "Москва",
-            "premise_address": "Певческий пер., 4 строение 1, Москва, 109028",
+            "premise_address": "Певческий пер., 4 строение 1",
             "premise_coordinates": "55.755182, 37.642432",
             "premise_phone": "+79689611088",
-            "tag": "QJ2R+RQ Tagansky District, Moscow, Russia"
+            "tag": "QJ2R+RQ Tagansky District, Moscow, Russia",
+            "specialists": ["Brad Pitt", "Sir Alex Ferguson", "Ewan McGregor"]
         },
         {
             "premise_name": "Birdie",
             "premise_city": "Москва",
-            "premise_address": "Старопименовский пер., 6, Москва, 127006",
+            "premise_address": "Старопименовский пер., 6",
             "premise_coordinates": "55.769476, 37.600890",
             "premise_phone": "+79296989642",
-            "tag": "QJ92+GF Tverskoy District, Moscow, Russia"
+            "tag": "QJ92+GF Tverskoy District, Moscow, Russia",
+            "specialists": ["Mike Myers", "Leatherface"]
         },
         {
             "premise_name": "Expat Salon",
             "premise_city": "Москва",
-            "premise_address": "Малый Патриарший пер., 3, Москва, 123001",
+            "premise_address": "Малый Патриарший пер., 3",
             "premise_coordinates": "55.764261, 37.591964",
             "premise_phone": "+74956503749",
-            "tag": "QH7R+5M Presnensky District, Moscow, Russia"
+            "tag": "QH7R+5M Presnensky District, Moscow, Russia",
+            "specialists": ["Ilya Osipov", "Leo Messi", "Benedict Cumberbatch"]
         },
         {
             "premise_name": "Brush Beauty Salon",
             "premise_city": "Москва",
-            "premise_address": "Трубецкая ул., 28с1, Москва, 119048",
+            "premise_address": "Трубецкая ул., 28с1",
             "premise_coordinates": "55.724838, 37.575828",
             "premise_phone": "+79255441113",
-            "tag": "PHGG+MP Khamovniki District, Moscow, Russia"
+            "tag": "PHGG+MP Khamovniki District, Moscow, Russia",
+            "specialists": ["Witcher", "Charlize Theron"]
           },
           {
             "premise_name": "Beauty Point",
             "premise_city": "Москва",
-            "premise_address": "Ходынский б-р, 4, Москва, 125167",
+            "premise_address": "Ходынский б-р, 4",
             "premise_coordinates": "55.790570, 37.524512",
             "premise_phone": "+79035498776",
-            "tag": "QGRH+5H Khoroshyovsky District, Moscow, Russia"
+            "tag": "QGRH+5H Khoroshyovsky District, Moscow, Russia",
+            "specialists": ["Arnold Schwarzenegger", "Wednesday"]
         },
         {
-            "premise_name": "Салон красоты IRIS, Войковская",
+            "premise_name": "Iris",
             "premise_city": "Москва",
-            "premise_address": "Зои и Александра Космодемьянских ул., д. 4, корп. 2, Москва, 125171",
+            "premise_address": "Зои и Александра Космодемьянских ул., 4",
             "premise_coordinates": "55.818254, 37.501180",
             "premise_phone": "+74952780780",
-            "tag": "RG92+CV Voykovsky District, Moscow, Russia"
+            "tag": "RG92+CV Voykovsky District, Moscow, Russia",
+            "specialists": ["Jen Aniston", "Rachel McAdams", "Nathalie Emmanuel"]
         }
     ]
 }

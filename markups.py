@@ -4,7 +4,6 @@ import json
 # KeyboardButton - экземпляр кнопки
 # ReplyKeyboardMarkup - меню для бота
 
-
 # --- Main Menu ---
 btn_main_menu = KeyboardButton('Главное меню')
 
@@ -123,11 +122,19 @@ last_order_repeat_menu = ReplyKeyboardMarkup(resize_keyboard = True).add(btn_las
 
 # --- Orders History ---
 btn_orders_history = KeyboardButton('История заказов')
-
 user_profile = ReplyKeyboardMarkup(resize_keyboard = True).add(btn_orders_history)
+
+
+
+
+
+
+
 orders_history = ReplyKeyboardMarkup(resize_keyboard = True).add(btn_main_menu)
+
 btn_orders_history_01 = KeyboardButton('Услуга #00001\n2022-12-05 11:00 \nБрови\nМосква, Салон 2\nМастер 8')
 btn_orders_history_02 = KeyboardButton('Услуга #00002\n2022-12-07 13:00 \nМакияж\nМосква, Салон 1\nМастер 4')
+
 orders_history_menu = ReplyKeyboardMarkup(resize_keyboard = True).add(btn_orders_history_01, btn_orders_history_02, 
                                                 btn_main_menu)
 
