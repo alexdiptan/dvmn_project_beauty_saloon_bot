@@ -57,9 +57,20 @@ def timeslots_manager_load():
                 del time_slot['date_available'][0]
         return specialists
       
-def time_slot_manager_save():
+def time_slot_manager_save(spec_data):
     with open('specialists.json', 'w', encoding='utf-8') as file:
-        json.dump(specialists, file)
+        json.dump(spec_data, file)
+
+
+### This one removes time slot when the order is placed
+### time_slot_manager_save(data2) can be used to save the data
+
+def remove_timeslot_load():
+  with open('specialists.json', 'r', encoding='utf-8') as file:
+      specialists = json.load(file)
+      specialists['specialists'][specialist_index]['date_available'][day_slot_index][day_picked].remove(time_picked)
+  return specialists
+
 
 '''
 data2 = timeslots_manager_load()
