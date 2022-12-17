@@ -31,11 +31,13 @@ client_order = {
     "timeslot": "11:00",
     "is_order_paid": False,
     "created_at": "17.12.2022 21:53:41",
-    "competed_at": ""
+    "competed_at": "",
 }
 
 prices = [
-    types.LabeledPrice(label=client_order["service_name"], amount=client_order["service_price"] * 100)
+    types.LabeledPrice(
+        label=client_order["service_name"], amount=client_order["service_price"] * 100
+    )
 ]
 
 
@@ -44,32 +46,40 @@ async def cmd_start(message: types.Message):
     await message.answer("Для оплаты введите /pay")
 
 
-@dp.message_handler(commands=['pay'])
+@dp.message_handler(commands=["pay"])
 async def cmd_buy(message: types.Message):
-    await bot.send_message(message.chat.id,
-                           f"Ваш заказ №{client_order['order_id']}: \n"
-                           f"Услуга: {client_order['service_name']}\n"
-                           f"Салон: {client_order['premise_name']}\n"
-                           f"Ваш мастер: {client_order['specialist']}\n"
-                           f"Дата и время услуги: {client_order['visit_date']} {client_order['timeslot']}\n"
-                           f"Сумма услуги: {client_order['service_price']}₽",
-                           parse_mode='Markdown')
-    await bot.send_invoice(message.chat.id, title=f'{client_order["service_name"]}',
-                           description=f"После оплаты вам будет доступен чек!",
-                           provider_token=payments_token,
-                           currency='rub',
-                           is_flexible=False,  # True If you need to set up Shipping Fee
-                           prices=prices,
-                           start_parameter='service_payment',
-                           payload='order payment')
+    await bot.send_message(
+        message.chat.id,
+        f"Ваш заказ №{client_order['order_id']}: \n"
+        f"Услуга: {client_order['service_name']}\n"
+        f"Салон: {client_order['premise_name']}\n"
+        f"Ваш мастер: {client_order['specialist']}\n"
+        f"Дата и время услуги: {client_order['visit_date']} {client_order['timeslot']}\n"
+        f"Сумма услуги: {client_order['service_price']}₽",
+        parse_mode="Markdown",
+    )
+    await bot.send_invoice(
+        message.chat.id,
+        title=f'{client_order["service_name"]}',
+        description=f"После оплаты вам будет доступен чек!",
+        provider_token=payments_token,
+        currency="rub",
+        is_flexible=False,  # True If you need to set up Shipping Fee
+        prices=prices,
+        start_parameter="service_payment",
+        payload="order payment",
+    )
 
 
 @dp.pre_checkout_query_handler(lambda query: True)
 async def checkout(pre_checkout_query: types.PreCheckoutQuery):
-    await bot.answer_pre_checkout_query(pre_checkout_query.id, ok=True,
-                                        error_message="Aliens tried to steal your card's CVV,"
-                                                      " but we successfully protected your credentials,"
-                                                      " try to pay again in a few minutes, we need a small rest.")
+    await bot.answer_pre_checkout_query(
+        pre_checkout_query.id,
+        ok=True,
+        error_message="Aliens tried to steal your card's CVV,"
+        " but we successfully protected your credentials,"
+        " try to pay again in a few minutes, we need a small rest.",
+    )
 
 
 @dp.message_handler(content_types=ContentTypes.SUCCESSFUL_PAYMENT)
@@ -83,12 +93,14 @@ async def got_payment(message: types.Message):
             processed_order["is_order_paid"] = True
     db_methods.save_json(loaded_db, db_file_name)
 
-    await bot.send_message(message.chat.id,
-                           f'Вы успешно оплатили услугу на сумму: {message.successful_payment.total_amount / 100} '
-                           f'{message.successful_payment.currency}\n'
-                           f'Спасибо что вы с нами!',
-                           parse_mode='Markdown')
+    await bot.send_message(
+        message.chat.id,
+        f"Вы успешно оплатили услугу на сумму: {message.successful_payment.total_amount / 100} "
+        f"{message.successful_payment.currency}\n"
+        f"Спасибо что вы с нами!",
+        parse_mode="Markdown",
+    )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     executor.start_polling(dp, skip_updates=True)
