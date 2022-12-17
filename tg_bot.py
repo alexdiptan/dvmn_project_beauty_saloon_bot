@@ -38,46 +38,10 @@ bot = Bot(token=tg_token)
 dp = Dispatcher(bot, storage=MemoryStorage())
 
 
-# --- TIMESLOTS MANAGER ---
-## SHOULD BE EXECUTED ONCE PER DAY
-### IS COMMENTED OUT AT THE MOMENT - SHOULD DECIDE WHEN TO RUN IT AND HOW
+# --- Order Counter And Globals---
 
 local_time = dt.now()
 today = date.today()
-
-def timeslots_manager_load():
-    with open('specialists.json', 'r', encoding='utf-8') as file:
-        specialists = json.load(file)
-        if (len(specialists['specialists'][0]['date_available'])) < 8:
-            for time_slot in specialists['specialists']:
-                time_slot['date_available'].append({str(today + timedelta(days=8)): ['10-00', '11-00', '12-00', '13-00', '14-00', '15-00', '16-00', '17-00', '18-00', '19-00']})
-
-        if (len(specialists['specialists'][0]['date_available'])) > 8:
-            for time_slot in specialists['specialists']:
-                del time_slot['date_available'][0]
-        return specialists
-      
-def time_slot_manager_save(spec_data):
-    with open('specialists.json', 'w', encoding='utf-8') as file:
-        json.dump(spec_data, file)
-
-
-### This one removes time slot when the order is placed
-### time_slot_manager_save(data2) can be used to save the data
-
-def remove_timeslot_load():
-  with open('specialists.json', 'r', encoding='utf-8') as file:
-      specialists = json.load(file)
-      specialists['specialists'][specialist_index]['date_available'][day_slot_index][day_picked].remove(time_picked)
-  return specialists
-
-
-'''
-data2 = timeslots_manager_load()
-time_slot_manager_save(data2)
-'''
-
-# --- Order Counter And Globals---
 
 order_id = 1
 premise_name = ""
@@ -120,6 +84,41 @@ specialist_finder = {
         "Nathalie Emmanuel": 13
     }
 }
+
+# --- TIMESLOTS MANAGER ---
+## SHOULD BE EXECUTED ONCE PER DAY
+### IS COMMENTED OUT AT THE MOMENT - SHOULD DECIDE WHEN TO RUN IT AND HOW
+
+
+def timeslots_manager_load():
+    with open('specialists.json', 'r', encoding='utf-8') as file:
+        specialists = json.load(file)
+        if (len(specialists['specialists'][0]['date_available'])) < 8:
+            for time_slot in specialists['specialists']:
+                time_slot['date_available'].append({str(today + timedelta(days=8)): ['10-00', '11-00', '12-00', '13-00', '14-00', '15-00', '16-00', '17-00', '18-00', '19-00']})
+
+        if (len(specialists['specialists'][0]['date_available'])) > 8:
+            for time_slot in specialists['specialists']:
+                del time_slot['date_available'][0]
+        return specialists
+      
+def time_slot_manager_save(spec_data):
+    with open('specialists.json', 'w', encoding='utf-8') as file:
+        json.dump(spec_data, file)
+
+'''
+data2 = timeslots_manager_load()
+time_slot_manager_save(data2)
+'''
+### This one removes time slot when the order is placed
+### time_slot_manager_save(data2) can be used to save the data
+
+def remove_timeslot_load():
+  with open('specialists.json', 'r', encoding='utf-8') as file:
+      specialists = json.load(file)
+      specialists['specialists'][specialist_index]['date_available'][day_slot_index][day_picked].remove(time_picked)
+  return specialists
+
 
 # --- Inline Buttons Builder ---
 
