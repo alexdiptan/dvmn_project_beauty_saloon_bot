@@ -86,8 +86,8 @@ specialist_finder = {
 }
 
 # --- TIMESLOTS MANAGER ---
-## SHOULD BE EXECUTED ONCE PER DAY
-### IS COMMENTED OUT AT THE MOMENT - SHOULD DECIDE WHEN TO RUN IT AND HOW
+# SHOULD BE EXECUTED ONCE PER DAY
+# IS COMMENTED OUT AT THE MOMENT - SHOULD DECIDE WHEN TO RUN IT AND HOW
 
 
 def timeslots_manager_load():
@@ -110,8 +110,8 @@ def time_slot_manager_save(spec_data):
 data2 = timeslots_manager_load()
 time_slot_manager_save(data2)
 '''
-### This one removes time slot when the order is placed
-### time_slot_manager_save(data2) can be used to save the data
+# This one removes time slot when the order is placed
+# time_slot_manager_save(data2) can be used to save the data
 
 def remove_timeslot_load():
   with open('specialists.json', 'r', encoding='utf-8') as file:
@@ -130,7 +130,7 @@ def gen_markup(texts: list, prefix: str, row_width: int) -> InlineKeyboardMarkup
 
 
 # --- Main Menu ---
-## When /start or /help command received the bot would give 2 buttons: "Записаться на процедуру" & "Личный кабинет" (reply_markup = navi.main_menu)
+# When /start or /help command received the bot would give 2 buttons: "Записаться на процедуру" & "Личный кабинет" (reply_markup = navi.main_menu)
 
 welcome_button = InlineKeyboardButton(text="Записаться на процедуру", callback_data="make_appointment")
 order_history_button = InlineKeyboardButton(text="Посмотреть историю заказов", callback_data="order_history_request")
@@ -173,7 +173,7 @@ async def make_order(message: types.Message):
 
 
 # --- Make Appointment ---
-## When "Записаться на процедуру" is tapped the bot will display the list of available premises
+# When "Записаться на процедуру" is tapped the bot will display the list of available premises
 
 @dp.callback_query_handler(text=["Записаться на процедуру"])
 async def make_order(message: types.Message):
@@ -185,8 +185,8 @@ async def make_order(message: types.Message):
     await bot.send_message(message.from_user.id, f"Какой салон Вам больше нравится?", reply_markup=markup)
 
 
-## When the appointment is tapped the bot will display the list of available premises
-## --- Pick Premise ---
+# When the appointment is tapped the bot will display the list of available premises
+# --- Pick Premise ---
 
 @dp.callback_query_handler(text=["prefix:0"])
 async def make_order(message: types.Message):
@@ -244,8 +244,8 @@ async def make_order(message: types.Message):
     await bot.send_message(message.from_user.id, f"Вы выбрали {premises['premises'][5]['premise_name']}: {premises['premises'][5]['premise_address']}", reply_markup=salon_keyboard)
 
 
-## When the salon is tapped the bot will display the list of available services
-## --- Pick Service ---
+# When the salon is tapped the bot will display the list of available services
+# --- Pick Service ---
 
 
 @dp.callback_query_handler(text="premise_picked")
@@ -258,7 +258,7 @@ async def make_order(message: types.Message):
         await bot.send_message(message.from_user.id, f"Какую услугу закажем?", reply_markup=service_markup)
 
 
-## After picking the service -> printout the price and back button
+# After picking the service -> printout the price and back button
 
 
 @dp.callback_query_handler(text=["service:0"])
@@ -421,7 +421,7 @@ async def make_order(message: types.Message):
     await bot.send_message(message.from_user.id, f"Выберите, пожалуйста, мастера", reply_markup=specialist_markup)
 
 
-## When specialist is picked - bot displays available dates for this specialist and after date - available time slots
+# When specialist is picked - bot displays available dates for this specialist and after date - available time slots
 
 @dp.callback_query_handler(text=["specialist:0"])
 async def make_order(message: types.Message):
@@ -474,8 +474,8 @@ async def make_order(message: types.Message):
     specialist_name = premises['premises'][index_set[f'{premise_name}']]['specialists'][2]
     await bot.send_message(message.from_user.id, f"Отличный выбор, {specialist_name} просто огонь!", reply_markup=service_keyboard)
 
-## Here the bot should give available time slots for given specialist:
-### First come days
+# Here the bot should give available time slots for given specialist:
+# First come days
 
 @dp.callback_query_handler(text=["specialist_picked"])
 async def make_order(message: types.Message):
@@ -494,8 +494,8 @@ async def make_order(message: types.Message):
     await bot.send_message(message.from_user.id, f"На какую дату Вас записать?", reply_markup=date_slot_markup)
 
 
-## Fetching the slot number in global day_slot_list:
-### Picking the date 
+# Fetching the slot number in global day_slot_list:
+# Picking the date 
 
 @dp.callback_query_handler(text=["day_slot:0"])
 async def make_order(message: types.Message):
@@ -619,11 +619,10 @@ async def make_order(message: types.Message):
     time_slot_list = times_list
     await bot.send_message(message.from_user.id, f"На какое время Вас записать?", reply_markup=time_slot_markup)
 
-## 10 slots
+# 10 slots
 
 @dp.callback_query_handler(text=["time_slot:0"])
 async def make_order(message: types.Message):
-    time_slot = time_slot_list[0]
     time_slot_button = InlineKeyboardButton(text="Подтвердить", callback_data="time_picked")
     time_slot_back_button = InlineKeyboardButton(text="Выбрать другое время", callback_data="date_picked")
     time_slot_keyboard = InlineKeyboardMarkup().add(time_slot_button).add(time_slot_back_button)
@@ -635,7 +634,6 @@ async def make_order(message: types.Message):
 
 @dp.callback_query_handler(text=["time_slot:1"])
 async def make_order(message: types.Message):
-    time_slot = time_slot_list[1]
     time_slot_button = InlineKeyboardButton(text="Подтвердить", callback_data="time_picked")
     time_slot_back_button = InlineKeyboardButton(text="Выбрать другое время", callback_data="date_picked")
     time_slot_keyboard = InlineKeyboardMarkup().add(time_slot_button).add(time_slot_back_button)
@@ -647,7 +645,6 @@ async def make_order(message: types.Message):
 
 @dp.callback_query_handler(text=["time_slot:2"])
 async def make_order(message: types.Message):
-    time_slot = time_slot_list[2]
     time_slot_button = InlineKeyboardButton(text="Подтвердить", callback_data="time_picked")
     time_slot_back_button = InlineKeyboardButton(text="Выбрать другое время", callback_data="date_picked")
     time_slot_keyboard = InlineKeyboardMarkup().add(time_slot_button).add(time_slot_back_button)
@@ -659,7 +656,6 @@ async def make_order(message: types.Message):
 
 @dp.callback_query_handler(text=["time_slot:3"])
 async def make_order(message: types.Message):
-    time_slot = time_slot_list[3]
     time_slot_button = InlineKeyboardButton(text="Подтвердить", callback_data="time_picked")
     time_slot_back_button = InlineKeyboardButton(text="Выбрать другое время", callback_data="date_picked")
     time_slot_keyboard = InlineKeyboardMarkup().add(time_slot_button).add(time_slot_back_button)
@@ -671,7 +667,6 @@ async def make_order(message: types.Message):
 
 @dp.callback_query_handler(text=["time_slot:4"])
 async def make_order(message: types.Message):
-    time_slot = time_slot_list[4]
     time_slot_button = InlineKeyboardButton(text="Подтвердить", callback_data="time_picked")
     time_slot_back_button = InlineKeyboardButton(text="Выбрать другое время", callback_data="date_picked")
     time_slot_keyboard = InlineKeyboardMarkup().add(time_slot_button).add(time_slot_back_button)
@@ -683,7 +678,6 @@ async def make_order(message: types.Message):
 
 @dp.callback_query_handler(text=["time_slot:5"])
 async def make_order(message: types.Message):
-    time_slot = time_slot_list[5]
     time_slot_button = InlineKeyboardButton(text="Подтвердить", callback_data="time_picked")
     time_slot_back_button = InlineKeyboardButton(text="Выбрать другое время", callback_data="date_picked")
     time_slot_keyboard = InlineKeyboardMarkup().add(time_slot_button).add(time_slot_back_button)
@@ -695,7 +689,6 @@ async def make_order(message: types.Message):
 
 @dp.callback_query_handler(text=["time_slot:6"])
 async def make_order(message: types.Message):
-    time_slot = time_slot_list[6]
     time_slot_button = InlineKeyboardButton(text="Подтвердить", callback_data="time_picked")
     time_slot_back_button = InlineKeyboardButton(text="Выбрать другое время", callback_data="date_picked")
     time_slot_keyboard = InlineKeyboardMarkup().add(time_slot_button).add(time_slot_back_button)
@@ -707,7 +700,6 @@ async def make_order(message: types.Message):
 
 @dp.callback_query_handler(text=["time_slot:7"])
 async def make_order(message: types.Message):
-    time_slot = time_slot_list[7]
     time_slot_button = InlineKeyboardButton(text="Подтвердить", callback_data="time_picked")
     time_slot_back_button = InlineKeyboardButton(text="Выбрать другое время", callback_data="date_picked")
     time_slot_keyboard = InlineKeyboardMarkup().add(time_slot_button).add(time_slot_back_button)
@@ -719,7 +711,6 @@ async def make_order(message: types.Message):
 
 @dp.callback_query_handler(text=["time_slot:8"])
 async def make_order(message: types.Message):
-    time_slot = time_slot_list[8]
     time_slot_button = InlineKeyboardButton(text="Подтвердить", callback_data="time_picked")
     time_slot_back_button = InlineKeyboardButton(text="Выбрать другое время", callback_data="date_picked")
     time_slot_keyboard = InlineKeyboardMarkup().add(time_slot_button).add(time_slot_back_button)
@@ -731,7 +722,6 @@ async def make_order(message: types.Message):
 
 @dp.callback_query_handler(text=["time_slot:9"])
 async def make_order(message: types.Message):
-    time_slot = time_slot_list[9]
     time_slot_button = InlineKeyboardButton(text="Подтвердить", callback_data="time_picked")
     time_slot_back_button = InlineKeyboardButton(text="Выбрать другое время", callback_data="date_picked")
     time_slot_keyboard = InlineKeyboardMarkup().add(time_slot_button).add(time_slot_back_button)
@@ -742,7 +732,7 @@ async def make_order(message: types.Message):
     await bot.send_message(message.from_user.id, f"Время оказания услуги: {time_picked}", reply_markup=time_slot_keyboard)
 
 
-## Now it is time to register
+# Now it is time to register
 
 @dp.callback_query_handler(text=["time_picked"])
 async def make_reservation(message: types.Message):
