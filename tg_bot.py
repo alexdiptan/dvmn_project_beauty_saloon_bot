@@ -97,12 +97,15 @@ import json
 def timeslots_manager_load():
     with open('specialists.json', 'r', encoding='utf-8') as file:
         specialists = json.load(file)
-        if specialists['specialists'][0]['date_available'][0] == str(today):
-            for time_slot in specialists['specialists']:
-                del time_slot['date_available'][0]
-            if (len(specialists['specialists'][0]['date_available'])) < 7:
+        try:
+            if specialists['specialists'][0]['date_available'][0][{today}] == today:
                 for time_slot in specialists['specialists']:
-                    time_slot['date_available'].append({str(today + timedelta(days=6)): ['10-00', '11-00', '12-00', '13-00', '14-00', '15-00', '16-00', '17-00', '18-00', '19-00']})
+                    del time_slot['date_available'][0]
+        except:
+            pass
+        if (len(specialists['specialists'][0]['date_available'])) < 7:
+            for time_slot in specialists['specialists']:
+                time_slot['date_available'].append({str(today + timedelta(days=6)): ['10-00', '11-00', '12-00', '13-00', '14-00', '15-00', '16-00', '17-00', '18-00', '19-00']})
     return specialists
       
 def time_slot_manager_save(spec_data):
@@ -179,23 +182,15 @@ async def make_order(message: types.Message):
             order_list_temp = []
             for order in orders_list:
                 order_list_temp.append([order['service_name'], order['premise_name'], order['specialist'], order['visit_date']])
-                orders_list = order_list_temp
-                if len(orders_list) > 1 and len(orders_list) >= 5:
-                    new_dict = []
-                    for item in range (1, 4):
-                        new_dict.append(orders_list[item*-1])
-                        new_dict.append(orders_list[0])
-                    orders_list = new_dict
+            orders_list = order_list_temp
 
-                elif len(orders_list) > 1 and len(orders_list) < 5:
-                    new_dict = []
-                    for item in range (1, len(orders_list)):
-                        new_dict.append(orders_list[item*-1])
-                    new_dict.append(orders_list[0])
-                    orders_list = new_dict
+            if len(orders_list) >= 5:
+                new_dict = []
+                for item in range (1, 4):
+                    new_dict.append(orders_list[item*(-1)])
 
-                else:
-                    orders_list = orders_list
+                new_dict.append(orders_list[0])
+                orders_list = new_dict
             
             global history_orders_list
             history_orders_list = orders_list
@@ -215,7 +210,6 @@ async def make_order(message: types.Message):
 
 @dp.callback_query_handler(text=["order:0"])
 async def make_order(message: types.Message):
-    order_repeat_data = history_orders_list[0]
     # service_name, premise_name, specialist_name
     global service_name
     service_name = history_orders_list[0][0]
@@ -231,7 +225,6 @@ async def make_order(message: types.Message):
 
 @dp.callback_query_handler(text=["order:1"])
 async def make_order(message: types.Message):
-    order_repeat_data = history_orders_list[1]
     # service_name, premise_name, specialist_name
     global service_name
     service_name = history_orders_list[1][0]
@@ -247,7 +240,6 @@ async def make_order(message: types.Message):
 
 @dp.callback_query_handler(text=["order:2"])
 async def make_order(message: types.Message):
-    order_repeat_data = history_orders_list[2]
     # service_name, premise_name, specialist_name
     global service_name
     service_name = history_orders_list[2][0]
@@ -263,7 +255,6 @@ async def make_order(message: types.Message):
 
 @dp.callback_query_handler(text=["order:3"])
 async def make_order(message: types.Message):
-    order_repeat_data = history_orders_list[3]
     # service_name, premise_name, specialist_name
     global service_name
     service_name = history_orders_list[3][0]
@@ -279,7 +270,6 @@ async def make_order(message: types.Message):
 
 @dp.callback_query_handler(text=["order:4"])
 async def make_order(message: types.Message):
-    order_repeat_data = history_orders_list[4]
     # service_name, premise_name, specialist_name
     global service_name
     service_name = history_orders_list[4][0]
