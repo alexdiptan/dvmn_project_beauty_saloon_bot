@@ -1,4 +1,5 @@
 import logging
+import asyncio
 from pathlib import Path
 import phonenumbers
 from aiogram import Bot, Dispatcher, executor, types
@@ -96,14 +97,13 @@ import json
 def timeslots_manager_load():
     with open('specialists.json', 'r', encoding='utf-8') as file:
         specialists = json.load(file)
-        if (len(specialists['specialists'][0]['date_available'])) < 8:
-            for time_slot in specialists['specialists']:
-                time_slot['date_available'].append({str(today + timedelta(days=8)): ['10-00', '11-00', '12-00', '13-00', '14-00', '15-00', '16-00', '17-00', '18-00', '19-00']})
-
-        if (len(specialists['specialists'][0]['date_available'])) > 8:
+        if specialists['specialists'][0]['date_available'][0] == str(today):
             for time_slot in specialists['specialists']:
                 del time_slot['date_available'][0]
-        return specialists
+            if (len(specialists['specialists'][0]['date_available'])) < 7:
+                for time_slot in specialists['specialists']:
+                    time_slot['date_available'].append({str(today + timedelta(days=6)): ['10-00', '11-00', '12-00', '13-00', '14-00', '15-00', '16-00', '17-00', '18-00', '19-00']})
+    return specialists
       
 def time_slot_manager_save(spec_data):
     with open('specialists.json', 'w', encoding='utf-8') as file:
@@ -898,7 +898,11 @@ async def get_phone(message: types.Message, state: FSMContext):
                 first_name = data.get('first_name')
                 last_name = data.get('last_name')
                 phonenumber = data.get('phonenumber')
+
                 await message.answer(f'Отлично! Теперь Вы официально наш лучший клиент! Свяжемся с Вами в ближайшее время!')
+                order_finalized_button = InlineKeyboardButton(text="Подтвердить запись", callback_data="order_finalized")
+                order_finalized_keyboard = InlineKeyboardMarkup().add(order_finalized_button)
+                await bot.send_message(message.from_user.id, "Спасибо за заказ", reply_markup = order_finalized_keyboard)
 
                 client_data = [
                     message.from_user.username,
@@ -910,15 +914,10 @@ async def get_phone(message: types.Message, state: FSMContext):
                 db_methods.add_client(loaded_db, client_data)
                 db_methods.save_json(loaded_db, db_file_name)
 
-                order_finalized_button = InlineKeyboardButton(text="Подтвердить запись", callback_data="order_finalized")
-                order_finalized_keyboard = InlineKeyboardMarkup().add(order_finalized_button)
-                await bot.send_message(message.from_user.id, "Спасибо за заказ", reply_markup=order_finalized_keyboard)
-                
             else:
                 await message.answer('Введите корректный номер телефона.')
     except NumberParseException:
         await message.answer('Введите корректный номер телефона.')
-
 
 # FINAL PAGE HERE
 
