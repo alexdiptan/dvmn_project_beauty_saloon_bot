@@ -73,7 +73,14 @@ def search_client(clients: dict, tg_user_id: int) -> dict:
     return found_client
 
 
-def add_client_order(service_db: dict, order_fields: list, tg_user_id: int):
+def add_client_order(service_db: dict, order_fields: list, tg_user_id: int) -> dict:
+    """
+    Функция возвращает словарь с добавленным заказом
+    :param service_db:
+    :param order_fields:
+    :param tg_user_id:
+    :return: added order
+    """
     clients = service_db["items"][0]["items"]
     clients_table = service_db["items"][0]
     clients_table.setdefault("last_order_id", 0)
@@ -103,17 +110,14 @@ def add_client_order(service_db: dict, order_fields: list, tg_user_id: int):
         "paid_at": "",
     }
 
-    filled_db = None
-
     if found_client:
         clients_table["last_order_id"] += 1
         client_order["order_id"] = clients_table["last_order_id"]
         found_client["client_orders"].append(client_order)
         found_client.setdefault("last_client_order", {})
         found_client["last_client_order"] = client_order
-        filled_db = service_db
 
-    return filled_db
+    return found_client["last_client_order"]
 
 
 def client_order_pay_acceptance(loaded_db, from_client_id: int, order_id: int) -> None:
@@ -149,7 +153,7 @@ def main():
 
     client_example = [
         "zero_man",
-        "75675231234",
+        75675231234,
         "Igor",
         "Sheremrtiev",
         "+79114210967",
@@ -173,10 +177,11 @@ def main():
 
     clients_table = loaded_db["items"][0]["items"]
 
-    add_client_order(loaded_db, order_example, 384973490)
+    last_client_order = add_client_order(loaded_db, order_example, 384973490)
+    print(f"{last_client_order=}")
 
     save_json(loaded_db, db_file_name)
-    client = search_client(clients_table, 384973490)
+    client = search_client(clients_table, 3849734901)
 
     if client is not None:
         for client_order in client["client_orders"]:
