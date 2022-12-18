@@ -64,13 +64,6 @@ def add_client(db_structure: dict, client_fields: list) -> dict:
     return db_structure
 
 
-# def search_client(clients: dict, phone: str) -> dict:
-#     found_client = None
-#     for client in clients:
-#         if phone in client.values():
-#             found_client = client
-#
-#     return found_client
 def search_client(clients: dict, tg_user_id: int) -> dict:
     found_client = None
     for client in clients:
@@ -107,7 +100,7 @@ def add_client_order(service_db: dict, order_fields: list, tg_user_id: int):
         "timeslot": timeslot,
         "is_order_paid": False,
         "created_at": order_created_at,
-        "competed_at": "",
+        "paid_at": "",
     }
 
     filled_db = None
@@ -121,6 +114,29 @@ def add_client_order(service_db: dict, order_fields: list, tg_user_id: int):
         filled_db = service_db
 
     return filled_db
+
+
+def client_order_pay_acceptance(loaded_db, from_client_id: int, order_id: int) -> None:
+    """
+    После того как оплата совершена, нужно в ордере подставить is_order_paid = True и дату, время платежа
+    в поле paid_at
+
+    :param loaded_db:
+    :param from_client_id:
+    :param order_id:
+    :return:
+    """
+    now_date = datetime.datetime.now()
+    paid_at = now_date.strftime("%d.%m.%Y %H:%M:%S")
+    clients_table = loaded_db["items"][0]["items"]
+    client = search_client(clients_table, from_client_id)
+
+    client["last_client_order"]["is_order_paid"] = True
+    client["last_client_order"]["paid_at"] = paid_at
+    for client_order in client["client_orders"]:
+        if client_order["order_id"] == order_id:
+            client_order["is_order_paid"] = True
+            client_order["paid_at"] = paid_at
 
 
 def main():
