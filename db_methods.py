@@ -120,15 +120,14 @@ def add_client_order(service_db: dict, order_fields: list, tg_user_id: int) -> d
     return found_client["last_client_order"]
 
 
-def client_order_pay_acceptance(loaded_db, from_client_id: int, order_id: int) -> None:
+def last_client_order_pay_confirmation(loaded_db, from_client_id: int) -> dict:
     """
     После того как оплата совершена, нужно в ордере подставить is_order_paid = True и дату, время платежа
     в поле paid_at
 
     :param loaded_db:
     :param from_client_id:
-    :param order_id:
-    :return:
+    :return: confirmed order
     """
     now_date = datetime.datetime.now()
     paid_at = now_date.strftime("%d.%m.%Y %H:%M:%S")
@@ -138,9 +137,11 @@ def client_order_pay_acceptance(loaded_db, from_client_id: int, order_id: int) -
     client["last_client_order"]["is_order_paid"] = True
     client["last_client_order"]["paid_at"] = paid_at
     for client_order in client["client_orders"]:
-        if client_order["order_id"] == order_id:
+        if client_order["order_id"] == client["last_client_order"]["order_id"]:
             client_order["is_order_paid"] = True
             client_order["paid_at"] = paid_at
+
+    return client["last_client_order"]
 
 
 def main():

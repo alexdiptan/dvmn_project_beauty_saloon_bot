@@ -89,7 +89,7 @@ async def checkout(pre_checkout_query: types.PreCheckoutQuery):
 @dp.message_handler(content_types=ContentTypes.SUCCESSFUL_PAYMENT)
 async def got_payment(message: types.Message):
     # Оплата прошла успешно. Проставляем в БД is_order_paid = True
-    db_methods.client_order_pay_acceptance(loaded_db, message.from_user.id, client_order["order_id"])
+    db_methods.last_client_order_pay_confirmation(loaded_db, message.from_user.id)
     db_methods.save_json(loaded_db, db_file_name)
 
     await bot.send_message(
