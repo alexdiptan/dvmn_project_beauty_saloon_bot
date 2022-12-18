@@ -1,6 +1,5 @@
 import logging
 from pathlib import Path
-
 import phonenumbers
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.dispatcher import FSMContext
@@ -13,6 +12,7 @@ from registration import Register
 import db_methods
 import markups as navi
 from datetime import date, timedelta
+
 
 env = Env()
 env.read_env()
@@ -54,6 +54,8 @@ day_slot_index = ""
 day_picked = ""
 time_slot_list = []
 time_picked = ""
+history_orders_list = []   # service_name, premise_name, specialist_name
+
 
 specialist_finder = {
     "Beauty Hair": {
@@ -89,6 +91,7 @@ specialist_finder = {
 # SHOULD BE EXECUTED ONCE PER DAY
 # IS COMMENTED OUT AT THE MOMENT - SHOULD DECIDE WHEN TO RUN IT AND HOW
 
+import json
 
 def timeslots_manager_load():
     with open('specialists.json', 'r', encoding='utf-8') as file:
@@ -106,10 +109,9 @@ def time_slot_manager_save(spec_data):
     with open('specialists.json', 'w', encoding='utf-8') as file:
         json.dump(spec_data, file)
 
-'''
 data2 = timeslots_manager_load()
 time_slot_manager_save(data2)
-'''
+
 # This one removes time slot when the order is placed
 # time_slot_manager_save(data2) can be used to save the data
 
@@ -156,20 +158,140 @@ async def welcome(call: types.CallbackQuery):
 
 
 # --- Orders History ---
+# Add order repeat here
+# Placeholder
 
 @dp.callback_query_handler(text=["history_requested"])
 async def make_order(message: types.Message):
     orders_list = []
+    loaded_db = db_methods.load_json(db_file_path)
+    clients_table = loaded_db["items"][0]["items"]
     client = db_methods.search_client(loaded_db["items"][0]["items"], message.from_user.id)
+
     if client is not None:
         for client_order in client["client_orders"]:
             orders_list.append(client_order)
+        if len(orders_list) == 0:
+            no_history_button = InlineKeyboardButton(text="Похоже вы раньше у нас не были, вернемся к выбору салона?", callback_data="make_appointment")
+            no_history_keyboard = InlineKeyboardMarkup().add(no_history_button)
+            await bot.send_message(message.from_user.id, f"Чтобы повторить заказ (при наличии истории) - нажмите на него", reply_markup=no_history_keyboard)
+        else:
+            order_list_temp = []
+            for order in orders_list:
+                order_list_temp.append([order['service_name'], order['premise_name'], order['specialist'], order['visit_date']])
+                orders_list = order_list_temp
+                if len(orders_list) > 1 and len(orders_list) >= 5:
+                    new_dict = []
+                    for item in range (1, 4):
+                        new_dict.append(orders_list[item*-1])
+                        new_dict.append(orders_list[0])
+                    orders_list = new_dict
+
+                elif len(orders_list) > 1 and len(orders_list) < 5:
+                    new_dict = []
+                    for item in range (1, len(orders_list)):
+                        new_dict.append(orders_list[item*-1])
+                    new_dict.append(orders_list[0])
+                    orders_list = new_dict
+
+                else:
+                    orders_list = orders_list
+            
+            global history_orders_list
+            history_orders_list = orders_list
+
             markup = gen_markup(orders_list, "order", 1)
+            await bot.send_message(message.from_user.id, f"Чтобы повторить заказ (при наличии истории) - нажмите на него", reply_markup=markup)
+
     else:
         orders_list.append("No prevous orders found")
         no_history_button = InlineKeyboardButton(text="Похоже вы тут впервые, вернемся к выбору салона?", callback_data="make_appointment")
-        markup = InlineKeyboardMarkup().add(no_history_button)
-    await bot.send_message(message.from_user.id, f"Чтобы повторить заказ (при наличии истории) - нажмите на него", reply_markup=markup)
+        no_history_keyboard = InlineKeyboardMarkup().add(no_history_button)
+        await bot.send_message(message.from_user.id, f"Чтобы повторить заказ (при наличии истории) - нажмите на него", reply_markup=no_history_keyboard)
+
+
+# Catching previous orders
+# possible = 5
+
+@dp.callback_query_handler(text=["order:0"])
+async def make_order(message: types.Message):
+    order_repeat_data = history_orders_list[0]
+    # service_name, premise_name, specialist_name
+    global service_name
+    service_name = history_orders_list[0][0]
+    global premise_name
+    premise_name = history_orders_list[0][1]
+    global specialist_name
+    specialist_name = history_orders_list[0][2]
+
+    order_repeat_confirm_button = InlineKeyboardButton(text="Повторить услугу", callback_data="specialist_picked")
+    order_repeat_back_button = InlineKeyboardButton(text="Назад к истории заказов", callback_data="history_requested")
+    order_repeat_keyboard = InlineKeyboardMarkup().add(order_repeat_confirm_button).add(order_repeat_back_button)
+    await bot.send_message(message.from_user.id, f"Вы желаете повторить услугу: {service_name}, в салоне: {premise_name}, у мастера: {specialist_name}", reply_markup=order_repeat_keyboard)
+
+@dp.callback_query_handler(text=["order:1"])
+async def make_order(message: types.Message):
+    order_repeat_data = history_orders_list[1]
+    # service_name, premise_name, specialist_name
+    global service_name
+    service_name = history_orders_list[1][0]
+    global premise_name
+    premise_name = history_orders_list[1][1]
+    global specialist_name
+    specialist_name = history_orders_list[1][2]
+
+    order_repeat_confirm_button = InlineKeyboardButton(text="Повторить услугу", callback_data="specialist_picked")
+    order_repeat_back_button = InlineKeyboardButton(text="Назад к истории заказов", callback_data="history_requested")
+    order_repeat_keyboard = InlineKeyboardMarkup().add(order_repeat_confirm_button).add(order_repeat_back_button)
+    await bot.send_message(message.from_user.id, f"Вы желаете повторить услугу: {service_name}, в салоне: {premise_name}, у мастера: {specialist_name}", reply_markup=order_repeat_keyboard)
+
+@dp.callback_query_handler(text=["order:2"])
+async def make_order(message: types.Message):
+    order_repeat_data = history_orders_list[2]
+    # service_name, premise_name, specialist_name
+    global service_name
+    service_name = history_orders_list[2][0]
+    global premise_name
+    premise_name = history_orders_list[2][1]
+    global specialist_name
+    specialist_name = history_orders_list[2][2]
+
+    order_repeat_confirm_button = InlineKeyboardButton(text="Повторить услугу", callback_data="specialist_picked")
+    order_repeat_back_button = InlineKeyboardButton(text="Назад к истории заказов", callback_data="history_requested")
+    order_repeat_keyboard = InlineKeyboardMarkup().add(order_repeat_confirm_button).add(order_repeat_back_button)
+    await bot.send_message(message.from_user.id, f"Вы желаете повторить услугу: {service_name}, в салоне: {premise_name}, у мастера: {specialist_name}", reply_markup=order_repeat_keyboard)
+
+@dp.callback_query_handler(text=["order:3"])
+async def make_order(message: types.Message):
+    order_repeat_data = history_orders_list[3]
+    # service_name, premise_name, specialist_name
+    global service_name
+    service_name = history_orders_list[3][0]
+    global premise_name
+    premise_name = history_orders_list[3][1]
+    global specialist_name
+    specialist_name = history_orders_list[3][2]
+
+    order_repeat_confirm_button = InlineKeyboardButton(text="Повторить услугу", callback_data="specialist_picked")
+    order_repeat_back_button = InlineKeyboardButton(text="Назад к истории заказов", callback_data="history_requested")
+    order_repeat_keyboard = InlineKeyboardMarkup().add(order_repeat_confirm_button).add(order_repeat_back_button)
+    await bot.send_message(message.from_user.id, f"Вы желаете повторить услугу: {service_name}, в салоне: {premise_name}, у мастера: {specialist_name}", reply_markup=order_repeat_keyboard)
+
+@dp.callback_query_handler(text=["order:4"])
+async def make_order(message: types.Message):
+    order_repeat_data = history_orders_list[4]
+    # service_name, premise_name, specialist_name
+    global service_name
+    service_name = history_orders_list[4][0]
+    global premise_name
+    premise_name = history_orders_list[4][1]
+    global specialist_name
+    specialist_name = history_orders_list[4][2]
+
+    order_repeat_confirm_button = InlineKeyboardButton(text="Повторить услугу", callback_data="specialist_picked")
+    order_repeat_back_button = InlineKeyboardButton(text="Назад к истории заказов", callback_data="history_requested")
+    order_repeat_keyboard = InlineKeyboardMarkup().add(order_repeat_confirm_button).add(order_repeat_back_button)
+    await bot.send_message(message.from_user.id, f"Вы желаете повторить услугу: {service_name}, в салоне: {premise_name}, у мастера: {specialist_name}", reply_markup=order_repeat_keyboard)
 
 
 # --- Make Appointment ---
@@ -259,7 +381,6 @@ async def make_order(message: types.Message):
 
 
 # After picking the service -> printout the price and back button
-
 
 @dp.callback_query_handler(text=["service:0"])
 async def make_order(message: types.Message):
@@ -623,6 +744,7 @@ async def make_order(message: types.Message):
 
 @dp.callback_query_handler(text=["time_slot:0"])
 async def make_order(message: types.Message):
+
     time_slot_button = InlineKeyboardButton(text="Подтвердить", callback_data="time_picked")
     time_slot_back_button = InlineKeyboardButton(text="Выбрать другое время", callback_data="date_picked")
     time_slot_keyboard = InlineKeyboardMarkup().add(time_slot_button).add(time_slot_back_button)
@@ -732,59 +854,33 @@ async def make_order(message: types.Message):
     await bot.send_message(message.from_user.id, f"Время оказания услуги: {time_picked}", reply_markup=time_slot_keyboard)
 
 
-# Now it is time to register
+# Now it is time to register or finalize the order
 
 @dp.callback_query_handler(text=["time_picked"])
 async def make_reservation(message: types.Message):
-    name = ReplyKeyboardMarkup(
-        keyboard=[
-            [
-                KeyboardButton(text='Отменить запись')
-            ]
-        ],
-        resize_keyboard=True,
-        one_time_keyboard=True
-    )
-    await message.answer('Для записи на прием введите ваше имя', 
-                         reply_markup=name
-                         )
-    await Register.first_name.set()
+    loaded_db = db_methods.load_json(db_file_path)
+    clients_table = loaded_db["items"][0]["items"]
+    client = db_methods.search_client(clients_table, message.from_user.id)
+    if client is not None:
+        order_finalized_button = InlineKeyboardButton(text="Подтвердить запись", callback_data="order_finalized")
+        order_finalized_keyboard = InlineKeyboardMarkup().add(order_finalized_button)
+        await bot.send_message(message.from_user.id, f"Спасибо за заказ", reply_markup=order_finalized_keyboard)
+    else:
+        await bot.send_message(message.from_user.id, f"Введите Ваше имя")
+        await message.answer('...loading')
+        await Register.first_name.set()
 
 @dp.message_handler(state=Register.first_name)
 async def get_first_name(message: types.Message, state: FSMContext):
     await state.update_data(first_name=message.text)
-    last_name = ReplyKeyboardMarkup(
-        keyboard=[
-            [
-                KeyboardButton(text='Отменить запись')
-            ]
-        ],
-        resize_keyboard=True,
-        one_time_keyboard=True
-    )
-    await message.answer('Введите вашу фамилию',
-                         reply_markup=last_name
-                         )
+    await bot.send_message(message.from_user.id, f"Введите Вашу фамилию")
     await Register.last_name.set()
-
 
 @dp.message_handler(state=Register.last_name)
 async def get_last_name(message: types.Message, state: FSMContext):
     await state.update_data(last_name=message.text)
-    last_name = ReplyKeyboardMarkup(
-        keyboard=[
-            [
-                KeyboardButton(text='Отменить запись')
-            ]
-        ],
-        resize_keyboard=True,
-        one_time_keyboard=True
-    )
-    await message.answer('Введите ваш номер мобильного телефона',
-                         reply_markup=last_name
-                         )
+    await bot.send_message(message.from_user.id, f"Введите Ваш номер мобильного телефона")
     await Register.phonenumber.set()
-
 
 @dp.message_handler(state=Register.phonenumber)
 async def get_phone(message: types.Message, state: FSMContext):
@@ -802,7 +898,8 @@ async def get_phone(message: types.Message, state: FSMContext):
                 first_name = data.get('first_name')
                 last_name = data.get('last_name')
                 phonenumber = data.get('phonenumber')
-                await message.answer(f'Запись прошла успешно. Свяжемся в ближайшее время!')
+                await message.answer(f'Отлично! Теперь Вы официально наш лучший клиент! Свяжемся с Вами в ближайшее время!')
+
                 client_data = [
                     message.from_user.username,
                     message.from_user.id,
@@ -812,10 +909,43 @@ async def get_phone(message: types.Message, state: FSMContext):
                 ]
                 db_methods.add_client(loaded_db, client_data)
                 db_methods.save_json(loaded_db, db_file_name)
+
+                order_finalized_button = InlineKeyboardButton(text="Подтвердить запись", callback_data="order_finalized")
+                order_finalized_keyboard = InlineKeyboardMarkup().add(order_finalized_button)
+                await bot.send_message(message.from_user.id, "Спасибо за заказ", reply_markup=order_finalized_keyboard)
+                
             else:
                 await message.answer('Введите корректный номер телефона.')
     except NumberParseException:
         await message.answer('Введите корректный номер телефона.')
+
+
+# FINAL PAGE HERE
+
+@dp.callback_query_handler(text=["order_finalized"])
+async def make_reservation(message: types.Message):
+
+    data2 = remove_timeslot_load()
+    time_slot_manager_save(data2)
+    loaded_db = db_methods.load_json(db_file_path)
+
+    order_example = [
+            f"{premise_name}",
+            f"{service_name}",
+            f"{service_price}",
+            f"{specialist_name}",
+            f"{day_picked}",
+            f"{time_picked}"
+        ]
+
+    db_methods.add_client_order(loaded_db, order_example, message.from_user.id)
+    db_methods.save_json(loaded_db, db_file_name)
+
+    await bot.send_message(message.from_user.id, f"Спасибо за то, что выбрали нас")
+    await bot.send_message(message.from_user.id, f"Вы записались на услугу: {service_name}")
+    await bot.send_message(message.from_user.id, f"Ваш мастер: {specialist_name}, будет ожидать Вас в салоне: {premise_name}")
+    await bot.send_message(message.from_user.id, f"Дата: {day_picked}")
+    await bot.send_message(message.from_user.id, f"Время: {time_picked}")
 
 
 if __name__ == '__main__':
