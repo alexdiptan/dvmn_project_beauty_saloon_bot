@@ -22,7 +22,7 @@ bot = Bot(tg_token)
 dp = Dispatcher(bot)
 
 client_order = {
-    "order_id": 11,
+    "order_id": 12,
     "premise_name": "Салон на Тверской",
     "service_name": "Тату",
     "service_price": 450,
@@ -64,6 +64,10 @@ async def cmd_buy(message: types.Message):
         description=f"После оплаты вам будет доступен чек!",
         provider_token=payments_token,
         currency="rub",
+        photo_url='https://its.ucr.edu/sites/default/files/styles/form_preview/public/icon_physical-plant-work-order.png',
+        photo_height=512,  # !=0/None or picture won't be shown
+        photo_width=512,
+        photo_size=512,
         is_flexible=False,  # True If you need to set up Shipping Fee
         prices=prices,
         start_parameter="service_payment",
@@ -85,12 +89,7 @@ async def checkout(pre_checkout_query: types.PreCheckoutQuery):
 @dp.message_handler(content_types=ContentTypes.SUCCESSFUL_PAYMENT)
 async def got_payment(message: types.Message):
     # Оплата прошла успешно. Проставляем в БД is_order_paid = True
-    clients_table = loaded_db["items"][0]["items"]
-    client = db_methods.search_client(clients_table, message.from_user.id)
-    client["last_client_order"]["is_order_paid"] = True
-    for processed_order in client["client_orders"]:
-        if processed_order["order_id"] == client_order["order_id"]:
-            processed_order["is_order_paid"] = True
+    db_methods.client_order_pay_acceptance(loaded_db, message.from_user.id, client_order["order_id"])
     db_methods.save_json(loaded_db, db_file_name)
 
     await bot.send_message(
