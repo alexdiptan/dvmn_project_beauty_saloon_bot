@@ -64,6 +64,10 @@ async def cmd_buy(message: types.Message):
         description=f"После оплаты вам будет доступен чек!",
         provider_token=payments_token,
         currency="rub",
+        photo_url='https://its.ucr.edu/sites/default/files/styles/form_preview/public/icon_physical-plant-work-order.png',
+        photo_height=512,  # !=0/None or picture won't be shown
+        photo_width=512,
+        photo_size=512,
         is_flexible=False,  # True If you need to set up Shipping Fee
         prices=prices,
         start_parameter="service_payment",
