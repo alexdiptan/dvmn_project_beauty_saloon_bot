@@ -183,7 +183,7 @@ async def make_order(message: types.Message):
             for order in orders_list:
                 order_list_temp.append([order['service_name'], order['premise_name'], order['specialist'], order['visit_date']])
             orders_list = order_list_temp
-            
+
             if len(orders_list) >= 5:
                 new_dict = []
                 for item in range (1, 4):
@@ -210,7 +210,6 @@ async def make_order(message: types.Message):
 
 @dp.callback_query_handler(text=["order:0"])
 async def make_order(message: types.Message):
-    order_repeat_data = history_orders_list[0]
     # service_name, premise_name, specialist_name
     global service_name
     service_name = history_orders_list[0][0]
@@ -226,7 +225,6 @@ async def make_order(message: types.Message):
 
 @dp.callback_query_handler(text=["order:1"])
 async def make_order(message: types.Message):
-    order_repeat_data = history_orders_list[1]
     # service_name, premise_name, specialist_name
     global service_name
     service_name = history_orders_list[1][0]
@@ -242,7 +240,6 @@ async def make_order(message: types.Message):
 
 @dp.callback_query_handler(text=["order:2"])
 async def make_order(message: types.Message):
-    order_repeat_data = history_orders_list[2]
     # service_name, premise_name, specialist_name
     global service_name
     service_name = history_orders_list[2][0]
@@ -258,7 +255,6 @@ async def make_order(message: types.Message):
 
 @dp.callback_query_handler(text=["order:3"])
 async def make_order(message: types.Message):
-    order_repeat_data = history_orders_list[3]
     # service_name, premise_name, specialist_name
     global service_name
     service_name = history_orders_list[3][0]
@@ -274,7 +270,6 @@ async def make_order(message: types.Message):
 
 @dp.callback_query_handler(text=["order:4"])
 async def make_order(message: types.Message):
-    order_repeat_data = history_orders_list[4]
     # service_name, premise_name, specialist_name
     global service_name
     service_name = history_orders_list[4][0]
